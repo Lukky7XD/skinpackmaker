@@ -1,9 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Skinpack Studio Pro</title>
+    
+    <title>Minecraft Skin Pack Maker | Create Bedrock & PE Skin Packs Online</title>
+    
+    <meta name="description" content="Free online Minecraft Skin Pack Maker for Bedrock (PE). Create custom .mcpack files, import PNG skins, 3D preview, and download instantly. No installation needed.">
+    
+    <meta name="keywords" content="minecraft skin pack maker, mcpe skin pack, bedrock skin creator, mcpack generator, minecraft pe skins, custom skin pack, 3d skin preview">
+    
+    <meta property="og:title" content="Minecraft Skin Pack Studio">
+    <meta property="og:description" content="The easiest way to create custom skin packs for Minecraft Bedrock & PE.">
+    <meta property="og:url" content="https://steverider7719.github.io/skinpackmaker/">
+    <meta property="og:type" content="website">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -28,6 +39,11 @@
             height: 100vh; 
             height: var(--vh);
             position: relative;
+        }
+
+        /* [SEO Hidden Text] - Not visible to users, but visible to bots */
+        .seo-hidden {
+            display: none;
         }
 
         .input-error {
@@ -223,6 +239,22 @@
 </head>
 <body>
 
+    <div class="seo-hidden">
+        <h1>Minecraft Skin Pack Maker Online</h1>
+        <p>
+            Skinpack Studio Pro is the best free tool to create custom Minecraft Skin Packs for Bedrock Edition and Pocket Edition (PE). 
+            Upload your PNG skins, organize them into a pack, and export as a valid .mcpack file. 
+            Features include 3D skin preview, slim (Alex) model support, and JSON validation.
+            Compatible with Minecraft PE 1.20, 1.21 and newer versions.
+        </p>
+        <ul>
+            <li>Create Minecraft Skin Packs</li>
+            <li>Bedrock Edition Skin Creator</li>
+            <li>MCPE Skin Pack Maker</li>
+            <li>Convert PNG to MCPACK</li>
+        </ul>
+    </div>
+
     <div id="customDialog" class="dialog-overlay">
         <div class="dialog-box">
             <div class="dialog-title" id="dialogTitle">TITLE</div>
@@ -235,7 +267,7 @@
     </div>
 
     <div id="startScreen" class="screen active" style="justify-content:center; align-items:center; background:#111; color:white;">
-        <div style="font-size:24px; font-weight:900; letter-spacing:4px; margin-bottom:40px;">SKINPACK STUDIO</div>
+        <h1 style="font-size:24px; font-weight:900; letter-spacing:4px; margin-bottom:40px; text-transform: uppercase;">SKINPACK STUDIO</h1>
         <button class="btn-green" style="padding:18px 48px;" onclick="openWizard()">NEW PROJECT</button>
     </div>
 
@@ -323,7 +355,6 @@
         function setAppHeight() { document.documentElement.style.setProperty('--vh', `${window.innerHeight}px`); }
         setAppHeight(); window.addEventListener('resize', () => { if (window.innerWidth !== lastWidth) { lastWidth = window.innerWidth; setAppHeight(); } });
 
-        // [추가됨] 새로고침/닫기 방지 복구
         window.onbeforeunload = function() {
             if (isProjectActive) return "Unsaved changes will be lost.";
         };
@@ -658,7 +689,6 @@
         async function checkAndExport() {
             if (skins.length === 0) { await showCustomAlert("NO SKINS", "Please add at least one skin."); return; }
             
-            // [추가됨] ID 중복 검사
             const ids = skins.map(s => s.localization_name);
             const duplicateIds = ids.filter((item, index) => ids.indexOf(item) !== index);
             if (duplicateIds.length > 0) {
@@ -666,7 +696,6 @@
                 return;
             }
 
-            // [추가됨] 파일 누락 검사
             const missingFiles = skins.filter(s => !skinFiles.has(s.texture));
             if (missingFiles.length > 0) {
                 await showCustomAlert("MISSING FILES", `Error: Texture file not found for ${missingFiles[0].displayName}.\nPlease re-add the texture.`);
