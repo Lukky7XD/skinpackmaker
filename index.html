@@ -1,18 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <title>Minecraft Skin Pack Maker | Online Bedrock & PE Tool</title>
-    <meta name="description" content="Free online Minecraft Skin Pack Maker for Bedrock Edition (PE). Create custom .mcpack files, import PNG skins, and support slim models. No installation required.">
-    <meta name="keywords" content="minecraft skin pack maker, mcpe skin creator, bedrock edition, mcpack generator, minecraft pe skins, custom skin pack, 3d skin preview">
-    
-    <meta property="og:title" content="Minecraft Skin Pack Studio">
-    <meta property="og:description" content="Create your own Minecraft Bedrock skin packs easily.">
-    <meta property="og:url" content="https://steverider7719.github.io/skinpackmaker/">
-    <meta property="og:type" content="website">
-
+    <title>Skinpack Studio Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -29,7 +20,6 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* 글꼴 유지 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: var(--app-bg);
@@ -39,9 +29,6 @@
             height: var(--vh);
             position: relative;
         }
-
-        /* [SEO] Hidden text for search engines */
-        .seo-hidden { display: none; }
 
         .input-error {
             border: 2px solid var(--danger) !important;
@@ -92,15 +79,8 @@
             transition: background 0.2s; height: 180px; justify-content: center;
         }
         .skin-card:active { background: var(--app-gray); }
-        
-        /* [삭제됨] skin-card-name 스타일 삭제 */
-        /* .skin-card-name { font-size: 12px; font-weight: 700; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; margin-top: 10px; } */
-        
-        /* Style for dynamic name tag (handles long text) */
-        .order-tag { 
-            font-size: 9px; color: var(--app-green); font-weight: 800; margin-bottom: 8px; letter-spacing: 0;
-            max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-        }
+        .skin-card-name { font-size: 12px; font-weight: 700; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; margin-top: 10px; }
+        .order-tag { font-size: 9px; color: var(--app-green); font-weight: 800; margin-bottom: 8px; letter-spacing: 1px; }
 
         .preview-row {
             display: flex; gap: 8px; justify-content: center;
@@ -243,22 +223,6 @@
 </head>
 <body>
 
-    <div class="seo-hidden">
-        <h1>Minecraft Skin Pack Maker Online</h1>
-        <p>
-            Skinpack Studio Pro is the best free tool to create custom Minecraft Skin Packs for Bedrock Edition and Pocket Edition (PE). 
-            Upload your PNG skins, organize them into a pack, and export as a valid .mcpack file. 
-            Features include 3D skin preview, slim (Alex) model support, and JSON validation.
-            Compatible with Minecraft PE 1.20, 1.21 and newer versions.
-        </p>
-        <ul>
-            <li>Create Minecraft Skin Packs</li>
-            <li>Bedrock Edition Skin Creator</li>
-            <li>MCPE Skin Pack Maker</li>
-            <li>Convert PNG to MCPACK</li>
-        </ul>
-    </div>
-
     <div id="customDialog" class="dialog-overlay">
         <div class="dialog-box">
             <div class="dialog-title" id="dialogTitle">TITLE</div>
@@ -271,7 +235,7 @@
     </div>
 
     <div id="startScreen" class="screen active" style="justify-content:center; align-items:center; background:#111; color:white;">
-        <div style="font-size:24px; font-weight:900; letter-spacing:4px; margin-bottom:40px; text-transform: uppercase;">SKINPACK STUDIO</div>
+        <div style="font-size:24px; font-weight:900; letter-spacing:4px; margin-bottom:40px;">SKINPACK STUDIO</div>
         <button class="btn-green" style="padding:18px 48px;" onclick="openWizard()">NEW PROJECT</button>
     </div>
 
@@ -486,7 +450,6 @@
             const grid = document.getElementById('skinGrid');
             grid.innerHTML = ''; 
             skins.forEach((s, i) => {
-                // [수정됨] 하단 텍스트 div 제거됨
                 grid.innerHTML += `
                 <div class="skin-card" onclick="openSkinSettings(${i})">
                     <div class="order-tag">${s.displayName}</div>
@@ -547,10 +510,13 @@
             const s = skins[i];
             sheet.style.transform = ''; 
             
+            // [수정됨] 이름 표시 시 확장자 제거
+            const displayTextureName = s.texture.replace(/\.(png|tga)$/i, "");
+
             document.getElementById('sheetForm').innerHTML = `
                 <div class="form-group"><label>Display Name</label><input type="text" value="${s.displayName}" oninput="handleDisplayNameChange(this.value, ${i})"></div>
                 <div class="form-group"><label>ID (No Spaces)</label><input type="text" value="${s.localization_name}" oninput="handleLocIdChange(this, ${i})"></div>
-                <div class="form-group"><label>Texture File Name</label><input type="text" value="${s.texture}" onchange="updateFileName(this.value, ${i})"></div>
+                <div class="form-group"><label>Texture Name</label><input type="text" value="${displayTextureName}" onchange="updateFileName(this.value, ${i})"></div>
                 
                 <div class="form-group">
                     <label>Model Type</label>
@@ -617,11 +583,6 @@
 
         function handleDisplayNameChange(val, i) { 
             skins[i].displayName = val; 
-            // [수정됨] 하단 텍스트 업데이트 로직 제거
-            // const card = document.querySelectorAll('.skin-card-name')[i]; 
-            // if(card) card.innerText = val; 
-            
-            // 상단 초록색 태그 업데이트는 유지
             const tag = document.querySelectorAll('.order-tag')[i];
             if(tag) tag.innerText = val;
         }
@@ -637,33 +598,44 @@
             updateSkinCanvas(i); 
         }
         
+        // [수정됨] 파일명 업데이트 로직 (확장자 자동 처리)
         function updateFileName(val, i) {
             val = val.trim();
             if (!val) return; 
 
-            if (!val.toLowerCase().endsWith('.png')) { val += '.png'; }
-            let base = val.replace(/\.png$/i, '');
-            val = getSafeFileName(base) + ".png";
+            // 사용자 입력에서 혹시 모를 확장자 제거 후 안전한 이름 변환
+            let base = val.replace(/\.(png|tga)$/i, '');
+            let safeBaseName = getSafeFileName(base);
+            
+            // 강제로 .png 붙임
+            let newFullFileName = safeBaseName + ".png";
 
-            const oldTextureName = skins[i].texture;
-            if (val === oldTextureName) return;
+            const oldFullFileName = skins[i].texture;
+            if (newFullFileName === oldFullFileName) {
+                // 이름이 같으면 UI만 리셋해주고 종료
+                const inputs = document.querySelectorAll('#sheetForm input');
+                if(inputs[2]) inputs[2].value = safeBaseName;
+                return;
+            }
 
-            if (skinFiles.has(val)) { 
+            if (skinFiles.has(newFullFileName)) { 
                 showCustomAlert("ERROR", "File name already exists."); 
                 const inputs = document.querySelectorAll('#sheetForm input');
-                if(inputs[2]) inputs[2].value = oldTextureName;
+                if(inputs[2]) inputs[2].value = oldFullFileName.replace(/\.(png|tga)$/i, "");
                 return; 
             }
 
-            if (skinFiles.has(oldTextureName)) { 
-                const f = skinFiles.get(oldTextureName); 
-                skinFiles.delete(oldTextureName); 
-                skinFiles.set(val, f); 
+            if (skinFiles.has(oldFullFileName)) { 
+                const f = skinFiles.get(oldFullFileName); 
+                skinFiles.delete(oldFullFileName); 
+                skinFiles.set(newFullFileName, f); 
             }
             
-            skins[i].texture = val;
+            skins[i].texture = newFullFileName;
+            
+            // UI에는 확장자 없이 표시
             const inputs = document.querySelectorAll('#sheetForm input');
-            if(inputs[2]) inputs[2].value = val;
+            if(inputs[2]) inputs[2].value = safeBaseName;
         }
 
         function duplicateCurrentSkin() {
