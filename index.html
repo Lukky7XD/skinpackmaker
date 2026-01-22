@@ -9,19 +9,21 @@
     <style>
         :root {
             --app-green: #03C75A;
-            --app-bg: #ffffff;
-            --app-gray: #f4f4f4;
-            --text-dark: #1e1e1e;
-            --text-light: #8e8e93;
-            --border: #e5e5ea;
-            --danger: #ff3b30;
+            --app-bg: #f8f9fa;
+            --app-white: #ffffff;
+            --text-dark: #222222;
+            --text-light: #999999;
+            --border: #eeeeee;
+            --danger: #ff4d4f;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
             --vh: 100vh;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background: var(--app-bg);
             color: var(--text-dark);
             overflow: hidden;
@@ -32,104 +34,127 @@
 
         .input-error {
             border: 2px solid var(--danger) !important;
-            background-color: #fff5f5 !important;
+            background-color: #fff0f0 !important;
+            animation: shake 0.3s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
         button:disabled {
-            background-color: #cccccc !important;
-            color: #888888 !important;
+            background-color: #e0e0e0 !important;
+            color: #aaaaaa !important;
             cursor: not-allowed !important;
-            pointer-events: none;
+            transform: none !important;
+            box-shadow: none !important;
         }
 
         .screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; display: none; flex-direction: column; z-index: 10;
+            background: var(--app-bg); display: none; flex-direction: column; z-index: 10;
         }
         .screen.active { display: flex; }
 
         /* App Bar */
         .app-bar {
-            height: 64px; padding: 0 16px; 
+            height: 60px; padding: 0 20px; 
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border); flex-shrink: 0;
-            background: white; position: relative;
+            background: var(--app-white); position: relative;
+            box-shadow: var(--shadow-sm); z-index: 20;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
         }
         .app-bar h2 { 
             position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-            font-size: 14px; font-weight: 800; letter-spacing: 1px; 
+            font-size: 15px; font-weight: 800; letter-spacing: 0.5px; 
             text-transform: uppercase; white-space: nowrap; margin: 0;
+            color: var(--text-dark);
         }
         .text-btn { 
-            background: none; border: none; font-size: 11px; font-weight: 700; 
-            cursor: pointer; color: var(--text-dark); letter-spacing: 0.5px; 
+            background: none; border: none; font-size: 13px; font-weight: 700; 
+            cursor: pointer; color: var(--text-dark);
             min-width: 60px; z-index: 2; padding: 10px 0;
+            transition: opacity 0.2s;
         }
+        .text-btn:active { opacity: 0.5; }
         .text-btn.left { text-align: left; }
         .text-btn.right { text-align: right; color: var(--app-green); }
 
-        .content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 120px; }
+        .content { flex: 1; overflow-y: auto; padding: 24px; padding-bottom: 120px; }
 
         /* Grid Styles */
-        .skin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .skin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .skin-card {
-            background: var(--app-bg); border: 1px solid var(--border);
-            padding: 16px 8px; display: flex; flex-direction: column;
+            background: var(--app-white); 
+            border: none;
+            border-radius: 20px;
+            padding: 16px 12px; display: flex; flex-direction: column;
             align-items: center; cursor: pointer; position: relative;
-            transition: background 0.2s; height: 180px; justify-content: center;
+            height: 200px; justify-content: center;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
         }
-        .skin-card:active { background: var(--app-gray); }
-        .skin-card-name { font-size: 12px; font-weight: 700; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; margin-top: 10px; }
-        .order-tag { font-size: 9px; color: var(--app-green); font-weight: 800; margin-bottom: 8px; letter-spacing: 1px; }
+        .skin-card:active { transform: scale(0.95); box-shadow: none; }
+        .skin-card-name { font-size: 13px; font-weight: 700; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; margin-top: 12px; color: #333; }
+        .order-tag { 
+            font-size: 10px; color: var(--app-green); font-weight: 800; margin-bottom: 10px; 
+            background: rgba(3, 199, 90, 0.1); padding: 4px 8px; border-radius: 10px;
+        }
 
         .preview-row {
-            display: flex; gap: 8px; justify-content: center;
-            background: #f9f9f9; padding: 8px; border-radius: 8px;
+            display: flex; gap: 10px; justify-content: center;
+            background: #f4f6f8; padding: 12px; border-radius: 16px;
         }
-        .skin-canvas { width: 48px; height: 96px; image-rendering: pixelated; }
+        .skin-canvas { width: 40px; height: 80px; image-rendering: pixelated; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1)); }
 
+        /* Bottom Sheet */
         #bottomSheetOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 100; display: none; opacity: 0; transition: opacity 0.3s;
+            background: rgba(0,0,0,0.4); z-index: 100; display: none; opacity: 0; transition: opacity 0.3s;
+            backdrop-filter: blur(4px);
         }
         #bottomSheet {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 85vh;
-            max-height: 85%;
-            background: white; border-radius: 24px 24px 0 0;
-            z-index: 101; transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 80vh;
+            max-height: 80%;
+            background: white; border-radius: 32px 32px 0 0;
+            z-index: 101; transform: translateY(110%);
+            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
             display: flex; flex-direction: column;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 -10px 60px rgba(0,0,0,0.15);
             will-change: transform;
         }
         #bottomSheet.active { transform: translateY(0); }
         
-        .sheet-handle-area { width: 100%; padding: 20px 0; cursor: grab; flex-shrink: 0; touch-action: none; }
-        .sheet-handle { width: 40px; height: 5px; background: #ddd; border-radius: 10px; margin: 0 auto; }
-        .sheet-content { flex: 1; overflow-y: auto; padding: 0 24px 40px; }
+        .sheet-handle-area { width: 100%; padding: 24px 0 10px; cursor: grab; flex-shrink: 0; display: flex; justify-content: center; }
+        .sheet-handle { width: 48px; height: 6px; background: #e0e0e0; border-radius: 10px; }
+        .sheet-content { flex: 1; overflow-y: auto; padding: 10px 24px 40px; }
 
+        /* Details & Inputs */
         details {
-            background: #f9f9f9; border-radius: 8px; padding: 12px;
-            margin-bottom: 24px; border: 1px solid var(--border);
+            background: #f8f9fa; border-radius: 16px; padding: 16px;
+            margin-bottom: 24px; border: none;
         }
         summary {
-            font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-dark);
+            font-size: 12px; font-weight: 800; text-transform: uppercase; color: #555;
             cursor: pointer; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center;
         }
         summary::-webkit-details-marker { display: none; }
-        summary::after { content: '+'; font-size: 16px; font-weight: bold; }
+        summary::after { content: '+'; font-size: 18px; font-weight: bold; color: var(--app-green); }
         details[open] summary::after { content: '-'; }
         
         .adv-group { margin-top: 16px; }
         .adv-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-        .adv-row label { margin: 0; font-size: 11px; font-weight: 600; }
-        .adv-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--app-green); }
+        .adv-row label { margin: 0; font-size: 13px; font-weight: 600; }
+        .adv-row input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--app-green); border-radius: 6px; }
 
-        .anim-list-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; width: 100%; }
-        .anim-row-item { display: flex; gap: 6px; align-items: center; width: 100%; box-sizing: border-box; }
-        .anim-input { flex: 1; min-width: 0; width: 0; font-family: monospace; font-size: 11px; padding: 10px !important; }
-        .btn-add-anim { width: 100%; background: #fff; border: 1px dashed #aaa; padding: 10px; color: #555; font-size: 11px; font-weight: bold; cursor: pointer; border-radius: 0; }
-        .btn-del-anim { width: 28px; height: 36px; background: var(--danger); color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 4px; flex-shrink: 0; }
+        .anim-list-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; width: 100%; }
+        .anim-row-item { display: flex; gap: 8px; align-items: center; width: 100%; }
+        .anim-input { flex: 1; min-width: 0; width: 0; font-family: monospace; font-size: 12px; padding: 12px !important; background: white; border-radius: 12px; border: 1px solid #eee; }
+        .btn-add-anim { width: 100%; background: white; border: 2px dashed #ddd; padding: 14px; color: #888; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 12px; transition: 0.2s; }
+        .btn-add-anim:active { background: #f0f0f0; border-color: #bbb; }
+        .btn-del-anim { width: 36px; height: 36px; background: #fff0f0; color: var(--danger); border: none; font-weight: bold; cursor: pointer; border-radius: 10px; flex-shrink: 0; }
 
         #viewer3D {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -138,87 +163,106 @@
         #canvas3D { width: 100%; flex: 1; cursor: grab; touch-action: none; }
         #canvas3D:active { cursor: grabbing; }
 
-        .form-group { margin-bottom: 24px; }
-        .form-group label { display: block; font-size: 10px; color: var(--text-light); margin-bottom: 8px; font-weight: 700; text-transform: uppercase; }
+        .form-group { margin-bottom: 28px; }
+        .form-group label { display: block; font-size: 11px; color: var(--text-light); margin-bottom: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .form-group input, .form-group select {
-            width: 100%; padding: 14px; border: 1px solid var(--border);
-            background: var(--app-bg); font-size: 14px; outline: none; border-radius: 0;
+            width: 100%; padding: 16px; border: none;
+            background: #f4f6f8; font-size: 15px; outline: none; border-radius: 16px;
+            color: var(--text-dark); font-weight: 600;
+            transition: box-shadow 0.2s;
         }
+        .form-group input:focus { box-shadow: 0 0 0 2px var(--app-green) inset; background: white; }
 
-        /* Custom Segment Control (Toggle Button) */
+        /* Custom Segment Control */
         .segment-control {
-            display: flex;
-            background: #f4f4f4;
-            padding: 4px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
+            display: flex; background: #f0f2f5; padding: 5px;
+            border-radius: 14px; border: none;
         }
         .segment-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            background: transparent;
-            color: var(--text-light);
-            font-size: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
+            flex: 1; padding: 12px; border: none; border-radius: 10px;
+            background: transparent; color: #888; font-size: 13px; font-weight: 700;
+            cursor: pointer; transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .segment-btn.active {
-            background: white;
-            color: var(--text-dark);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background: white; color: var(--text-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); transform: scale(1.02);
         }
 
+        /* Bottom Bar */
         .bottom-bar {
             position: absolute; bottom: 0; left: 0; width: 100%;
-            padding: 16px 20px; background: white; border-top: 1px solid var(--border);
-            display: flex; gap: 10px; z-index: 5;
+            padding: 20px; background: linear-gradient(to top, white 80%, rgba(255,255,255,0));
+            display: flex; gap: 12px; z-index: 5; pointer-events: none;
         }
-        .btn-full { flex: 1; padding: 16px; border: none; font-weight: bold; cursor: pointer; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; border-radius: 0; display: flex; align-items: center; justify-content: center; }
-        .btn-green { background: var(--app-green); color: white; }
-        .btn-black { background: #111; color: white; }
-        .btn-outline { background: white; border: 1px solid #ddd; color: var(--text-dark); margin-top: 8px; }
+        .bottom-bar > * { pointer-events: auto; }
 
-        .summary-list { 
-            background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 20px; 
-            max-height: 50vh; overflow-y: auto; border: 1px solid var(--border);
+        .btn-full { 
+            flex: 1; padding: 18px; border: none; font-weight: 800; cursor: pointer; 
+            font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; 
+            border-radius: 20px; 
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.1s, box-shadow 0.2s;
+            box-shadow: var(--shadow-md);
         }
-        .summary-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 0; border-bottom: 1px solid #eee; font-size: 12px;
+        .btn-full:active { transform: scale(0.96); box-shadow: none; }
+        
+        .btn-green { background: var(--app-green); color: white; box-shadow: 0 8px 20px rgba(3, 199, 90, 0.3); }
+        .btn-black { background: #222; color: white; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+        .btn-outline { background: white; border: 2px solid #eee; color: var(--text-dark); margin-top: 12px; box-shadow: none; }
+
+        /* Reorder List Styles */
+        .reorder-list { display: flex; flex-direction: column; gap: 12px; }
+        .reorder-item {
+            background: white; padding: 16px 20px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: var(--shadow-sm); user-select: none;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+            border: 1px solid #f0f0f0;
         }
-        .summary-item:last-child { border-bottom: none; }
-        .summary-name { font-weight: bold; }
-        .summary-id { color: #888; font-size: 10px; }
+        .reorder-item.dragging {
+            opacity: 0.9; 
+            background: #fff;
+            box-shadow: 0 16px 32px rgba(0,0,0,0.15);
+            transform: scale(0.95);
+            z-index: 1000;
+            border-color: var(--app-green);
+        }
+        .reorder-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+        .reorder-name { font-weight: 800; font-size: 15px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #333; }
+        .reorder-id { font-size: 12px; color: #aaa; font-family: monospace; }
+        .reorder-handle { 
+            font-size: 20px; color: #ddd; cursor: grab; padding: 10px; margin-right: -10px;
+            touch-action: none; display: flex; align-items: center;
+        }
 
         /* Custom Dialog UI */
         .dialog-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 3000;
+            background: rgba(0,0,0,0.5); z-index: 3000;
             display: none; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.2s; backdrop-filter: blur(2px);
+            opacity: 0; transition: opacity 0.2s; backdrop-filter: blur(5px);
         }
         .dialog-overlay.active { opacity: 1; }
         .dialog-box {
-            background: white; width: 80%; max-width: 320px;
-            padding: 24px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            transform: scale(0.9); transition: transform 0.2s cubic-bezier(0.2,0.8,0.2,1);
+            background: white; width: 85%; max-width: 340px;
+            padding: 32px 24px; border-radius: 28px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             text-align: center;
         }
         .dialog-overlay.active .dialog-box { transform: scale(1); }
-        .dialog-title { font-size: 16px; font-weight: 800; margin-bottom: 12px; text-transform: uppercase; }
-        .dialog-msg { font-size: 13px; color: #555; margin-bottom: 24px; line-height: 1.5; white-space: pre-wrap; }
-        .dialog-actions { display: flex; gap: 10px; }
+        .dialog-title { font-size: 18px; font-weight: 900; margin-bottom: 16px; text-transform: uppercase; color: #222; }
+        .dialog-msg { font-size: 14px; color: #666; margin-bottom: 32px; line-height: 1.6; white-space: pre-wrap; word-break: keep-all; }
+        .dialog-actions { display: flex; gap: 12px; }
         .dialog-btn {
-            flex: 1; padding: 12px; border: none; border-radius: 8px;
-            font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase;
+            flex: 1; padding: 16px; border: none; border-radius: 16px;
+            font-size: 13px; font-weight: 800; cursor: pointer; text-transform: uppercase;
+            transition: transform 0.1s;
         }
-        .dialog-btn-cancel { background: #f0f0f0; color: #555; }
-        .dialog-btn-confirm { background: var(--app-green); color: white; }
-        .dialog-btn-danger { background: var(--danger); color: white; }
+        .dialog-btn:active { transform: scale(0.95); }
+        .dialog-btn-cancel { background: #f2f4f6; color: #666; }
+        .dialog-btn-confirm { background: var(--app-green); color: white; box-shadow: 0 4px 12px rgba(3, 199, 90, 0.3); }
+        .dialog-btn-danger { background: var(--danger); color: white; box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3); }
     </style>
 </head>
 <body>
@@ -235,8 +279,8 @@
     </div>
 
     <div id="startScreen" class="screen active" style="justify-content:center; align-items:center; background:#111; color:white;">
-        <div style="font-size:24px; font-weight:900; letter-spacing:4px; margin-bottom:40px;">SKINPACK STUDIO</div>
-        <button class="btn-green" style="padding:18px 48px;" onclick="openWizard()">NEW PROJECT</button>
+        <div style="font-size:24px; font-weight:900; letter-spacing:4px; margin-bottom:40px; text-transform: uppercase;">SKINPACK STUDIO</div>
+        <button class="btn-green btn-full" style="padding:18px 48px; flex:0; width:auto;" onclick="openWizard()">NEW PROJECT</button>
     </div>
 
     <div id="setupScreen" class="screen">
@@ -259,13 +303,13 @@
         <div class="app-bar">
             <button class="text-btn left" onclick="openSettings()">INFO</button>
             <h2 id="mainPackTitle">SKIN LIST</h2>
-            <button class="text-btn right" onclick="checkAndExport()">EXPORT</button>
+            <button class="text-btn right" onclick="openExportScreen()">EXPORT</button>
         </div>
         <div class="content"><div class="skin-grid" id="skinGrid"></div></div>
         
         <div class="bottom-bar">
             <label for="fileAdd" class="btn-full btn-black" style="cursor:pointer;">+ ADD SKIN</label>
-            <button class="btn-full btn-green" onclick="checkAndExport()">SAVE MCPACK</button>
+            <button class="btn-full btn-green" onclick="openExportScreen()">EXPORT</button>
         </div>
         
         <input type="file" id="fileAdd" accept=".png, .tga, image/png, image/x-tga, image/targa" multiple style="display:none" onchange="handleAddFiles(this)">
@@ -273,19 +317,18 @@
 
     <div id="exportScreen" class="screen">
         <div class="app-bar">
-            <button class="text-btn left" onclick="navTo('mainScreen')">CANCEL</button>
-            <h2>SUMMARY</h2>
+            <button class="text-btn left" onclick="closeReorderScreen()">CANCEL</button>
+            <h2>REORDER</h2>
             <div class="text-btn right"></div>
         </div>
         <div class="content">
-            <div style="margin-bottom:12px; font-size:12px; color:#666; text-transform:uppercase; font-weight:bold;">Skins to be exported:</div>
-            <div id="exportSummaryList" class="summary-list"></div>
-            <div style="font-size:11px; color:#888; text-align:center;">
-                Please verify all skin names and settings before downloading.
+            <div style="margin-bottom:16px; font-size:13px; color:#888; text-transform:uppercase; font-weight:800; letter-spacing:1px; text-align:center;">
+                Drag handle (≡) to reorder
             </div>
+            <div id="reorderList" class="reorder-list"></div>
         </div>
         <div class="bottom-bar">
-            <button class="btn-full btn-green" onclick="finalDownload()">DOWNLOAD .MCPACK</button>
+            <button class="btn-full btn-green" onclick="checkAndExport()">DOWNLOAD</button>
         </div>
     </div>
 
@@ -295,27 +338,27 @@
             <div class="sheet-handle"></div>
         </div>
         <div class="sheet-content">
-            <h3 style="font-size:16px; font-weight:800; margin-bottom:24px; text-transform:uppercase;">Edit Skin</h3>
+            <h3 style="font-size:18px; font-weight:900; margin-bottom:28px; text-transform:uppercase; color:#222; text-align:center;">Edit Skin</h3>
             <div id="sheetForm"></div>
             
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button class="btn-full btn-black" style="flex:1;" onclick="start3DPreview()">3D PREVIEW</button>
+            <div style="display:flex; gap:12px; margin-top:24px;">
+                <button class="btn-full btn-black" style="flex:1; border-radius:16px;" onclick="start3DPreview()">3D PREVIEW</button>
             </div>
             
-            <button class="btn-full btn-outline" style="margin-top:10px; width:100%; border:1px solid #ccc; background:#f4f4f4;" onclick="duplicateCurrentSkin()">DUPLICATE SKIN</button>
+            <button class="btn-full btn-outline" style="width:100%; border-radius:16px;" onclick="duplicateCurrentSkin()">DUPLICATE SKIN</button>
 
-            <button style="width:100%; background:none; border:none; color:#ff3b30; font-weight:700; margin-top:30px; font-size:12px; text-transform:uppercase;" onclick="deleteCurrentSkin()">Remove Skin</button>
+            <button style="width:100%; background:none; border:none; color:var(--danger); font-weight:700; margin-top:32px; font-size:13px; text-transform:uppercase; padding:16px;" onclick="deleteCurrentSkin()">Remove Skin</button>
         </div>
     </div>
 
     <div id="viewer3D">
-        <div class="app-bar" style="background:#111; color:white; border-bottom:1px solid #333;">
+        <div class="app-bar" style="background:#1a1a1a; color:white; border-bottom:1px solid #333; box-shadow:none;">
             <div class="text-btn left"></div>
-            <h2>PREVIEW</h2>
+            <h2 style="color:white;">PREVIEW</h2>
             <button class="text-btn right" style="color:white;" onclick="close3DViewer()">CLOSE</button>
         </div>
         <div id="canvas3D"></div>
-        <div style="padding:20px; color:#666; font-size:10px; text-align:center; text-transform:uppercase;">Touch & Drag to Rotate</div>
+        <div style="padding:30px; color:#666; font-size:11px; text-align:center; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Touch & Drag to Rotate</div>
     </div>
 
     <script>
@@ -488,7 +531,7 @@
         let startY = 0, currentY = 0, isDragging = false, lastY = 0, lastTime = 0, velocity = 0;
         handle.addEventListener('touchstart', e => { startY = e.touches[0].clientY; lastY = startY; lastTime = Date.now(); velocity = 0; isDragging = true; sheet.style.transition = 'none'; }, {passive: false});
         document.addEventListener('touchmove', e => { if (!isDragging) return; const cy = e.touches[0].clientY; const dt = Date.now() - lastTime; if (dt > 0) velocity = (cy - lastY) / dt; lastY = cy; lastTime = Date.now(); const delta = cy - startY; if (delta > 0) { e.preventDefault(); currentY = delta; sheet.style.transform = `translateY(${currentY}px)`; } }, {passive: false});
-        document.addEventListener('touchend', () => { if (!isDragging) return; isDragging = false; sheet.style.transition = 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)'; if (currentY > 150 || velocity > 0.5) { sheet.style.transform = `translateY(100%)`; document.getElementById('bottomSheetOverlay').style.opacity = '0'; setTimeout(() => { closeSheet(true); }, 300); } else { sheet.style.transform = `translateY(0)`; } currentY = 0; velocity = 0; });
+        document.addEventListener('touchend', () => { if (!isDragging) return; isDragging = false; sheet.style.transition = 'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1)'; if (currentY > 150 || velocity > 0.5) { sheet.style.transform = `translateY(110%)`; document.getElementById('bottomSheetOverlay').style.opacity = '0'; setTimeout(() => { closeSheet(true); }, 300); } else { sheet.style.transform = `translateY(0)`; } currentY = 0; velocity = 0; });
 
         function closeSheet(skipAnimation = false) {
             const overlay = document.getElementById('bottomSheetOverlay');
@@ -510,7 +553,6 @@
             const s = skins[i];
             sheet.style.transform = ''; 
             
-            // [수정됨] 이름 표시 시 확장자 제거
             const displayTextureName = s.texture.replace(/\.(png|tga)$/i, "");
 
             document.getElementById('sheetForm').innerHTML = `
@@ -598,44 +640,33 @@
             updateSkinCanvas(i); 
         }
         
-        // [수정됨] 파일명 업데이트 로직 (확장자 자동 처리)
         function updateFileName(val, i) {
             val = val.trim();
             if (!val) return; 
 
-            // 사용자 입력에서 혹시 모를 확장자 제거 후 안전한 이름 변환
-            let base = val.replace(/\.(png|tga)$/i, '');
-            let safeBaseName = getSafeFileName(base);
-            
-            // 강제로 .png 붙임
-            let newFullFileName = safeBaseName + ".png";
+            if (!val.toLowerCase().endsWith('.png')) { val += '.png'; }
+            let base = val.replace(/\.png$/i, '');
+            val = getSafeFileName(base) + ".png";
 
-            const oldFullFileName = skins[i].texture;
-            if (newFullFileName === oldFullFileName) {
-                // 이름이 같으면 UI만 리셋해주고 종료
-                const inputs = document.querySelectorAll('#sheetForm input');
-                if(inputs[2]) inputs[2].value = safeBaseName;
-                return;
-            }
+            const oldTextureName = skins[i].texture;
+            if (val === oldTextureName) return;
 
-            if (skinFiles.has(newFullFileName)) { 
+            if (skinFiles.has(val)) { 
                 showCustomAlert("ERROR", "File name already exists."); 
                 const inputs = document.querySelectorAll('#sheetForm input');
-                if(inputs[2]) inputs[2].value = oldFullFileName.replace(/\.(png|tga)$/i, "");
+                if(inputs[2]) inputs[2].value = oldTextureName.replace(/\.(png|tga)$/i, "");
                 return; 
             }
 
-            if (skinFiles.has(oldFullFileName)) { 
-                const f = skinFiles.get(oldFullFileName); 
-                skinFiles.delete(oldFullFileName); 
-                skinFiles.set(newFullFileName, f); 
+            if (skinFiles.has(oldTextureName)) { 
+                const f = skinFiles.get(oldTextureName); 
+                skinFiles.delete(oldTextureName); 
+                skinFiles.set(val, f); 
             }
             
-            skins[i].texture = newFullFileName;
-            
-            // UI에는 확장자 없이 표시
+            skins[i].texture = val;
             const inputs = document.querySelectorAll('#sheetForm input');
-            if(inputs[2]) inputs[2].value = safeBaseName;
+            if(inputs[2]) inputs[2].value = getSafeFileName(base);
         }
 
         function duplicateCurrentSkin() {
@@ -645,7 +676,10 @@
             const newSkin = JSON.parse(JSON.stringify(src));
             newSkin.displayName = newName;
             newSkin.localization_name = newId;
-            skins.push(newSkin);
+            
+            // [수정됨] 현재 스킨 바로 뒤에 추가
+            skins.splice(selectedIndex + 1, 0, newSkin);
+            
             closeSheet();
             renderGrid();
         }
@@ -661,17 +695,113 @@
             }
         }
 
-        // --- 3D VIEWER ---
-        let scene, camera, renderer, modelGroup; let is3DInit = false;
-        function start3DPreview() { document.getElementById('viewer3D').style.display = 'flex'; if (is3DInit && modelGroup) clearModelGroup(); setTimeout(() => { if (!is3DInit) { init3D(); is3DInit = true; } else { updateViewerSize(); } loadSkinModel(skins[selectedIndex]); }, 10); }
-        function close3DViewer() { document.getElementById('viewer3D').style.display = 'none'; }
-        function updateViewerSize() { const container = document.getElementById('canvas3D'); if (renderer && container) { const w = container.clientWidth; const h = container.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); } }
-        function clearModelGroup() { if (!modelGroup) return; while(modelGroup.children.length > 0){ const child = modelGroup.children[0]; if(child.geometry) child.geometry.dispose(); if(child.material) { if(Array.isArray(child.material)) child.material.forEach(m => m.dispose()); else child.material.dispose(); } modelGroup.remove(child); } }
-        function init3D() { const container = document.getElementById('canvas3D'); scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100); camera.position.z = 40; renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setSize(container.clientWidth, container.clientHeight); renderer.setPixelRatio(window.devicePixelRatio); renderer.outputEncoding = THREE.sRGBEncoding; container.appendChild(renderer.domElement); scene.add(new THREE.AmbientLight(0xffffff, 1.2)); modelGroup = new THREE.Group(); scene.add(modelGroup); let isDown = false, startX = 0, startY = 0; container.addEventListener('pointerdown', e => { isDown = true; startX = e.clientX; startY = e.clientY; container.setPointerCapture(e.pointerId); }); container.addEventListener('pointermove', e => { if (!isDown) return; modelGroup.rotation.y += (e.clientX - startX) * 0.01; modelGroup.rotation.x += (e.clientY - startY) * 0.01; startX = e.clientX; startY = e.clientY; }); container.addEventListener('pointerup', e => { isDown = false; container.releasePointerCapture(e.pointerId); }); window.addEventListener('resize', updateViewerSize); function animate() { requestAnimationFrame(animate); renderer.render(scene, camera); } animate(); }
-        function loadSkinModel(skin) { clearModelGroup(); modelGroup.rotation.set(0, 0, 0); modelGroup.scale.set(0.75, 0.75, 0.75); modelGroup.position.set(0,0,0); const file = skinFiles.get(skin.texture); if (!file) return; const img = new Image(); img.src = URL.createObjectURL(file); img.onload = () => { createSteveModel(img, skin.skinType === 'slim'); modelGroup.children.forEach(child => { child.position.y -= 16; }); }; }
-        function createSteveModel(img, isSlim) { const getTex = (x, y, w, h, isTransparent, isFlipped = false) => { const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h; const ctx = canvas.getContext('2d'); ctx.save(); if (isFlipped) { ctx.translate(0, h); ctx.scale(1, -1); } ctx.drawImage(img, x, y, w, h, 0, 0, w, h); ctx.restore(); const tex = new THREE.CanvasTexture(canvas); tex.magFilter = THREE.NearestFilter; tex.minFilter = THREE.NearestFilter; tex.encoding = THREE.sRGBEncoding; return new THREE.MeshBasicMaterial({ map: tex, color: 0xffffff, transparent: isTransparent, opacity: 1, alphaTest: isTransparent ? 0.1 : 0, side: isTransparent ? THREE.DoubleSide : THREE.FrontSide }); }; function createLimb(w, h, d, x, y, z, u, v, inflate = 0) { const boxW = w + inflate * 2; const boxH = h + inflate * 2; const boxD = d + inflate * 2; const geometry = new THREE.BoxGeometry(boxW, boxH, boxD); const isOuter = inflate > 0; const materials = [ getTex(u + d + w, v + d, d, h, isOuter), getTex(u, v + d, d, h, isOuter), getTex(u + d, v, w, d, isOuter), getTex(u + d + w, v, w, d, isOuter, true), getTex(u + d, v + d, w, h, isOuter), getTex(u + d + w + d, v + d, w, h, isOuter) ]; const mesh = new THREE.Mesh(geometry, materials); mesh.position.set(x, y, z); modelGroup.add(mesh); } createLimb(8, 8, 8, 0, 28, 0, 0, 0); createLimb(8, 8, 8, 0, 28, 0, 32, 0, 0.5); createLimb(8, 12, 4, 0, 18, 0, 16, 16); createLimb(8, 12, 4, 0, 18, 0, 16, 32, 0.25); const armW = isSlim ? 3 : 4; const armX = isSlim ? 5.5 : 6; const armY = isSlim ? 17.5 : 18; createLimb(armW, 12, 4, -armX, armY, 0, 40, 16); createLimb(armW, 12, 4, -armX, armY, 0, 40, 32, 0.25); createLimb(armW, 12, 4, armX, armY, 0, 32, 48); createLimb(armW, 12, 4, armX, armY, 0, 48, 48, 0.25); createLimb(4, 12, 4, -1.9, 6, 0, 0, 16); createLimb(4, 12, 4, -1.9, 6, 0, 0, 32, 0.25); createLimb(4, 12, 4, 1.9, 6, 0, 16, 48); createLimb(4, 12, 4, 1.9, 6, 0, 0, 48, 0.25); }
+        // --- EXPORT & REORDER LOGIC ---
+        function openExportScreen() {
+            if (skins.length === 0) { showCustomAlert("NO SKINS", "Add skins to export."); return; }
+            renderReorderList();
+            navTo('exportScreen');
+        }
 
-        // --- EXPORT ---
+        // [수정됨] CANCEL 클릭 시 그리드 갱신 후 메인으로
+        function closeReorderScreen() {
+            renderGrid();
+            navTo('mainScreen');
+        }
+
+        function renderReorderList() {
+            const list = document.getElementById('reorderList');
+            list.innerHTML = '';
+            skins.forEach((s, i) => {
+                const item = document.createElement('div');
+                item.className = 'reorder-item';
+                // [수정됨] 이미지 제거, 텍스트만 표시
+                item.innerHTML = `
+                    <div class="reorder-info">
+                        <div class="reorder-name">${s.displayName}</div>
+                        <div class="reorder-id">${s.localization_name}</div>
+                    </div>
+                    <div class="reorder-handle">≡</div>
+                `;
+                
+                const handle = item.querySelector('.reorder-handle');
+                handle.addEventListener('touchstart', (e) => handleTouchStart(e, i, item));
+                handle.addEventListener('touchmove', (e) => handleTouchMove(e, item));
+                handle.addEventListener('touchend', (e) => handleTouchEnd(e, item));
+
+                list.appendChild(item);
+            });
+        }
+
+        let dragSrcEl = null;
+        let dragSrcIndex = -1;
+        let placeholder = null;
+
+        function handleTouchStart(e, index, item) {
+            dragSrcEl = item;
+            dragSrcIndex = index;
+            
+            const rect = item.getBoundingClientRect();
+            item.style.width = rect.width + 'px';
+            item.style.boxSizing = 'border-box';
+
+            item.classList.add('dragging');
+            
+            placeholder = document.createElement('div');
+            placeholder.className = 'reorder-item';
+            placeholder.style.visibility = 'hidden';
+            placeholder.style.height = item.offsetHeight + 'px';
+            placeholder.style.margin = '0';
+            item.parentNode.insertBefore(placeholder, item.nextSibling);
+            
+            item.style.position = 'absolute';
+            item.style.zIndex = 1000;
+        }
+
+        function handleTouchMove(e, item) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            item.style.top = (touch.clientY - item.offsetHeight/2) + 'px';
+            
+            const elements = document.elementsFromPoint(touch.clientX, touch.clientY);
+            const target = elements.find(el => el.classList.contains('reorder-item') && el !== item && el !== placeholder);
+            
+            if (target) {
+                const list = document.getElementById('reorderList');
+                const rect = target.getBoundingClientRect();
+                const next = (touch.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+                list.insertBefore(placeholder, next ? target.nextSibling : target);
+            }
+        }
+
+        function handleTouchEnd(e, item) {
+            item.classList.remove('dragging');
+            item.style.position = '';
+            item.style.top = '';
+            item.style.width = '';
+            item.style.zIndex = '';
+            item.style.boxSizing = '';
+            
+            const list = document.getElementById('reorderList');
+            list.insertBefore(item, placeholder);
+            list.removeChild(placeholder);
+            
+            const newSkins = [];
+            const rows = list.querySelectorAll('.reorder-item');
+            
+            // [수정됨] ID를 사용하여 스킨 찾기 (이름 중복 방지)
+            rows.forEach(row => {
+                const id = row.querySelector('.reorder-id').innerText;
+                const skin = skins.find(s => s.localization_name === id);
+                if(skin) newSkins.push(skin);
+            });
+            
+            if(newSkins.length === skins.length) {
+                skins = newSkins;
+            }
+            
+            renderReorderList(); 
+        }
+
         async function checkAndExport() {
             if (skins.length === 0) { await showCustomAlert("NO SKINS", "Please add at least one skin."); return; }
             
@@ -691,20 +821,7 @@
             if (skins.some(s => !s.localization_name || s.localization_name.trim() === "")) { await showCustomAlert("ERROR", "Skin ID cannot be empty.\nPlease check your skins."); return; }
             if (skins.some(s => /\s/.test(s.localization_name))) { await showCustomAlert("ERROR", "Remove spaces from Skin IDs."); return; }
 
-            const list = document.getElementById('exportSummaryList');
-            list.innerHTML = '';
-            skins.forEach((s, i) => {
-                list.innerHTML += `
-                <div class="summary-item">
-                    <div>
-                        <div class="summary-name">${s.displayName}</div>
-                        <div class="summary-id">${s.localization_name} (${s.skinType})</div>
-                    </div>
-                    <div>${s.texture}</div>
-                </div>`;
-            });
-
-            navTo('exportScreen');
+            finalDownload();
         }
 
         async function finalDownload() {
