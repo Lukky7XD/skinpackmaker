@@ -7,263 +7,254 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        :root {
-            --app-green: #03C75A;
-            --app-bg: #f8f9fa;
-            --app-white: #ffffff;
-            --text-dark: #222222;
-            --text-light: #999999;
-            --border: #eeeeee;
-            --danger: #ff4d4f;
-            --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
-            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
-            --vh: 100vh;
-        }
+    :root {
+        --app-green: #03C75A;
+        --app-bg: #f8f9fa;
+        --app-white: #ffffff;
+        --text-dark: #222222;
+        --text-light: #999999;
+        --border: #eeeeee;
+        --danger: #ff4d4f;
+        --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
+        --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+        --vh: 100vh;
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: var(--app-bg);
-            color: var(--text-dark);
-            overflow: hidden;
-            height: 100vh; 
-            height: var(--vh);
-            position: relative;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        background: var(--app-bg);
+        color: var(--text-dark);
+        overflow: hidden;
+        height: 100vh; 
+        height: var(--vh);
+        position: relative;
+    }
 
-        .input-error {
-            border: 2px solid var(--danger) !important;
-            background-color: #fff0f0 !important;
-            animation: shake 0.3s ease-in-out;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
+    /* 유틸리티 & 입력 에러 */
+    .input-error {
+        border: 2px solid var(--danger) !important;
+        background-color: #fff0f0 !important;
+        animation: shake 0.3s ease-in-out;
+    }
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
 
-        button:disabled {
-            background-color: #e0e0e0 !important;
-            color: #aaaaaa !important;
-            cursor: not-allowed !important;
-            transform: none !important;
-            box-shadow: none !important;
-        }
+    button:disabled {
+        background-color: #e0e0e0 !important;
+        color: #aaaaaa !important;
+        cursor: not-allowed !important;
+        transform: none !important;
+        box-shadow: none !important;
+    }
 
-        .screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--app-bg); display: none; flex-direction: column; z-index: 10;
-        }
-        .screen.active { display: flex; }
+    /* 화면 전환 구조 */
+    .screen {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--app-bg); display: none; flex-direction: column; z-index: 10;
+    }
+    .screen.active { display: flex; }
 
-        /* App Bar */
-        .app-bar {
-            height: 60px; padding: 0 20px; 
-            display: flex; justify-content: space-between; align-items: center;
-            background: var(--app-white); position: relative;
-            box-shadow: var(--shadow-sm); z-index: 20;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-        }
-        .app-bar h2 { 
-            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-            font-size: 15px; font-weight: 800; letter-spacing: 0.5px; 
-            text-transform: uppercase; white-space: nowrap; margin: 0;
-            color: var(--text-dark);
-        }
-        .text-btn { 
-            background: none; border: none; font-size: 13px; font-weight: 700; 
-            cursor: pointer; color: var(--text-dark);
-            min-width: 60px; z-index: 2; padding: 10px 0;
-            transition: opacity 0.2s;
-        }
-        .text-btn:active { opacity: 0.5; }
-        .text-btn.left { text-align: left; }
-        .text-btn.right { text-align: right; color: var(--app-green); }
+    /* 앱바 (상단) */
+    .app-bar {
+        height: 60px; padding: 0 20px; 
+        display: flex; justify-content: space-between; align-items: center;
+        background: var(--app-white); position: relative;
+        box-shadow: var(--shadow-sm); z-index: 20;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+    }
+    .app-bar h2 { 
+        position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+        font-size: 15px; font-weight: 800; letter-spacing: 0.5px; 
+        text-transform: uppercase; white-space: nowrap; margin: 0;
+        color: var(--text-dark);
+    }
+    .text-btn { 
+        background: none; border: none; font-size: 13px; font-weight: 700; 
+        cursor: pointer; color: var(--text-dark);
+        min-width: 60px; z-index: 2; padding: 10px 0;
+        transition: opacity 0.2s;
+    }
+    .text-btn:active { opacity: 0.5; }
+    .text-btn.left { text-align: left; }
+    .text-btn.right { text-align: right; color: var(--app-green); }
 
-        .content { flex: 1; overflow-y: auto; padding: 24px; padding-bottom: 120px; }
+    .content { flex: 1; overflow-y: auto; padding: 24px; padding-bottom: 120px; }
 
-        /* Grid Styles */
-        .skin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .skin-card {
-            background: var(--app-white); 
-            border: none;
-            border-radius: 20px;
-            padding: 16px 12px; display: flex; flex-direction: column;
-            align-items: center; cursor: pointer; position: relative;
-            height: 200px; justify-content: center;
-            box-shadow: var(--shadow-sm);
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
-        }
-        .skin-card:active { transform: scale(0.95); box-shadow: none; }
-        .skin-card-name { font-size: 13px; font-weight: 700; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; margin-top: 12px; color: #333; }
-        .order-tag { 
-            font-size: 10px; color: var(--app-green); font-weight: 800; margin-bottom: 10px; 
-            background: rgba(3, 199, 90, 0.1); padding: 4px 8px; border-radius: 10px;
-        }
+    /* 스킨 그리드 & 카드 */
+    .skin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .skin-card {
+        background: var(--app-white); 
+        border: none;
+        border-radius: 20px;
+        padding: 16px 12px; display: flex; flex-direction: column;
+        align-items: center; cursor: pointer; position: relative;
+        height: 200px; justify-content: center;
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+    }
+    .skin-card:active { transform: scale(0.95); box-shadow: none; }
+    .skin-card-name { font-size: 13px; font-weight: 700; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; margin-top: 12px; color: #333; }
+    .order-tag { 
+        font-size: 10px; color: var(--app-green); font-weight: 800; margin-bottom: 10px; 
+        background: rgba(3, 199, 90, 0.1); padding: 4px 8px; border-radius: 10px;
+        max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
 
-        .preview-row {
-            display: flex; gap: 10px; justify-content: center;
-            background: #f4f6f8; padding: 12px; border-radius: 16px;
-        }
-        .skin-canvas { width: 40px; height: 80px; image-rendering: pixelated; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1)); }
+    .preview-row {
+        display: flex; gap: 10px; justify-content: center;
+        background: #f4f6f8; padding: 12px; border-radius: 16px;
+    }
+    .skin-canvas { width: 40px; height: 80px; image-rendering: pixelated; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1)); }
 
-        /* Bottom Sheet */
-        #bottomSheetOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); z-index: 100; display: none; opacity: 0; transition: opacity 0.3s;
-            backdrop-filter: blur(4px);
-        }
-        #bottomSheet {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 80vh;
-            max-height: 80%;
-            background: white; border-radius: 32px 32px 0 0;
-            z-index: 101; transform: translateY(110%);
-            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            display: flex; flex-direction: column;
-            box-shadow: 0 -10px 60px rgba(0,0,0,0.15);
-            will-change: transform;
-        }
-        #bottomSheet.active { transform: translateY(0); }
-        
-        .sheet-handle-area { width: 100%; padding: 24px 0 10px; cursor: grab; flex-shrink: 0; display: flex; justify-content: center; }
-        .sheet-handle { width: 48px; height: 6px; background: #e0e0e0; border-radius: 10px; }
-        .sheet-content { flex: 1; overflow-y: auto; padding: 10px 24px 40px; }
+    /* 바텀 시트 (설정창) */
+    #bottomSheetOverlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.4); z-index: 100; display: none; opacity: 0; transition: opacity 0.3s;
+        backdrop-filter: blur(4px);
+    }
+    #bottomSheet {
+        position: fixed; bottom: 0; left: 0; width: 100%; height: 80vh;
+        max-height: 80%;
+        background: white; border-radius: 32px 32px 0 0;
+        z-index: 101; transform: translateY(110%);
+        transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        display: flex; flex-direction: column;
+        box-shadow: 0 -10px 60px rgba(0,0,0,0.15);
+        will-change: transform;
+    }
+    #bottomSheet.active { transform: translateY(0); }
+    
+    .sheet-handle-area { width: 100%; padding: 24px 0 10px; cursor: grab; flex-shrink: 0; display: flex; justify-content: center; }
+    .sheet-handle { width: 48px; height: 6px; background: #e0e0e0; border-radius: 10px; }
+    .sheet-content { flex: 1; overflow-y: auto; padding: 10px 24px 40px; }
 
-        /* Details & Inputs */
-        details {
-            background: #f8f9fa; border-radius: 16px; padding: 16px;
-            margin-bottom: 24px; border: none;
-        }
-        summary {
-            font-size: 12px; font-weight: 800; text-transform: uppercase; color: #555;
-            cursor: pointer; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center;
-        }
-        summary::-webkit-details-marker { display: none; }
-        summary::after { content: '+'; font-size: 18px; font-weight: bold; color: var(--app-green); }
-        details[open] summary::after { content: '-'; }
-        
-        .adv-group { margin-top: 16px; }
-        .adv-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-        .adv-row label { margin: 0; font-size: 13px; font-weight: 600; }
-        .adv-row input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--app-green); border-radius: 6px; }
+    /* 폼 요소 및 디테일 */
+    details {
+        background: #f8f9fa; border-radius: 16px; padding: 16px;
+        margin-bottom: 24px; border: none;
+    }
+    summary {
+        font-size: 12px; font-weight: 800; text-transform: uppercase; color: #555;
+        cursor: pointer; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '+'; font-size: 18px; font-weight: bold; color: var(--app-green); }
+    details[open] summary::after { content: '-'; }
+    
+    .adv-group { margin-top: 16px; }
+    .adv-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .adv-row label { margin: 0; font-size: 13px; font-weight: 600; }
+    .adv-row input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--app-green); border-radius: 6px; }
 
-        .anim-list-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; width: 100%; }
-        .anim-row-item { display: flex; gap: 8px; align-items: center; width: 100%; }
-        .anim-input { flex: 1; min-width: 0; width: 0; font-family: monospace; font-size: 12px; padding: 12px !important; background: white; border-radius: 12px; border: 1px solid #eee; }
-        .btn-add-anim { width: 100%; background: white; border: 2px dashed #ddd; padding: 14px; color: #888; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 12px; transition: 0.2s; }
-        .btn-add-anim:active { background: #f0f0f0; border-color: #bbb; }
-        .btn-del-anim { width: 36px; height: 36px; background: #fff0f0; color: var(--danger); border: none; font-weight: bold; cursor: pointer; border-radius: 10px; flex-shrink: 0; }
+    .anim-list-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; width: 100%; }
+    .anim-row-item { display: flex; gap: 8px; align-items: center; width: 100%; }
+    .anim-input { flex: 1; min-width: 0; width: 0; font-family: monospace; font-size: 12px; padding: 12px !important; background: white; border-radius: 12px; border: 1px solid #eee; }
+    .btn-add-anim { width: 100%; background: white; border: 2px dashed #ddd; padding: 14px; color: #888; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 12px; transition: 0.2s; }
+    .btn-add-anim:active { background: #f0f0f0; border-color: #bbb; }
+    .btn-del-anim { width: 36px; height: 36px; background: #fff0f0; color: var(--danger); border: none; font-weight: bold; cursor: pointer; border-radius: 10px; flex-shrink: 0; }
 
-        #viewer3D {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #1a1a1a; z-index: 200; display: none; flex-direction: column;
-        }
-        #canvas3D { width: 100%; flex: 1; cursor: grab; touch-action: none; }
-        #canvas3D:active { cursor: grabbing; }
+    /* 3D 뷰어 */
+    #viewer3D {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: #1a1a1a; z-index: 200; display: none; flex-direction: column;
+    }
+    #canvas3D { width: 100%; flex: 1; cursor: grab; touch-action: none; }
+    #canvas3D:active { cursor: grabbing; }
 
-        .form-group { margin-bottom: 28px; }
-        .form-group label { display: block; font-size: 11px; color: var(--text-light); margin-bottom: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .form-group input, .form-group select {
-            width: 100%; padding: 16px; border: none;
-            background: #f4f6f8; font-size: 15px; outline: none; border-radius: 16px;
-            color: var(--text-dark); font-weight: 600;
-            transition: box-shadow 0.2s;
-        }
-        .form-group input:focus { box-shadow: 0 0 0 2px var(--app-green) inset; background: white; }
+    /* 폼 일반 */
+    .form-group { margin-bottom: 28px; }
+    .form-group label { display: block; font-size: 11px; color: var(--text-light); margin-bottom: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input, .form-group select {
+        width: 100%; padding: 16px; border: none;
+        background: #f4f6f8; font-size: 15px; outline: none; border-radius: 16px;
+        color: var(--text-dark); font-weight: 600;
+        transition: box-shadow 0.2s;
+    }
+    .form-group input:focus { box-shadow: 0 0 0 2px var(--app-green) inset; background: white; }
 
-        /* Custom Segment Control */
-        .segment-control {
-            display: flex; background: #f0f2f5; padding: 5px;
-            border-radius: 14px; border: none;
-        }
-        .segment-btn {
-            flex: 1; padding: 12px; border: none; border-radius: 10px;
-            background: transparent; color: #888; font-size: 13px; font-weight: 700;
-            cursor: pointer; transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .segment-btn.active {
-            background: white; color: var(--text-dark);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08); transform: scale(1.02);
-        }
+    /* 파일 변경 버튼 및 그룹 */
+    .input-group { display: flex; gap: 8px; align-items: center; }
+    .btn-icon {
+        width: 54px; height: 54px; background: white; border: 1px solid #eee;
+        border-radius: 16px; display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: all 0.2s; color: var(--text-dark); flex-shrink: 0;
+    }
+    .btn-icon:active { background: #f0f0f0; transform: scale(0.95); }
+    .btn-icon:disabled { background: #f4f6f8; color: #ccc; cursor: not-allowed; border-color: transparent; }
+    .input-disabled { background-color: #f4f6f8 !important; color: #aaa !important; cursor: not-allowed; }
 
-        /* Bottom Bar */
-        .bottom-bar {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            padding: 20px; background: linear-gradient(to top, white 80%, rgba(255,255,255,0));
-            display: flex; gap: 12px; z-index: 5; pointer-events: none;
-        }
-        .bottom-bar > * { pointer-events: auto; }
+    /* 세그먼트 컨트롤 */
+    .segment-control {
+        display: flex; background: #f0f2f5; padding: 5px;
+        border-radius: 14px; border: none;
+    }
+    .segment-btn {
+        flex: 1; padding: 12px; border: none; border-radius: 10px;
+        background: transparent; color: #888; font-size: 13px; font-weight: 700;
+        cursor: pointer; transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .segment-btn.active {
+        background: white; color: var(--text-dark);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08); transform: scale(1.02);
+    }
 
-        .btn-full { 
-            flex: 1; padding: 18px; border: none; font-weight: 800; cursor: pointer; 
-            font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; 
-            border-radius: 20px; 
-            display: flex; align-items: center; justify-content: center;
-            transition: transform 0.1s, box-shadow 0.2s;
-            box-shadow: var(--shadow-md);
-        }
-        .btn-full:active { transform: scale(0.96); box-shadow: none; }
-        
-        .btn-green { background: var(--app-green); color: white; box-shadow: 0 8px 20px rgba(3, 199, 90, 0.3); }
-        .btn-black { background: #222; color: white; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-        .btn-outline { background: white; border: 2px solid #eee; color: var(--text-dark); margin-top: 12px; box-shadow: none; }
+    /* 하단 바 */
+    .bottom-bar {
+        position: absolute; bottom: 0; left: 0; width: 100%;
+        padding: 20px; background: linear-gradient(to top, white 80%, rgba(255,255,255,0));
+        display: flex; gap: 12px; z-index: 5; pointer-events: none;
+    }
+    .bottom-bar > * { pointer-events: auto; }
 
-        /* Reorder List Styles */
-        .reorder-list { display: flex; flex-direction: column; gap: 12px; }
-        .reorder-item {
-            background: white; padding: 16px 20px; border-radius: 16px;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: var(--shadow-sm); user-select: none;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
-            border: 1px solid #f0f0f0;
-        }
-        .reorder-item.dragging {
-            opacity: 0.9; 
-            background: #fff;
-            box-shadow: 0 16px 32px rgba(0,0,0,0.15);
-            transform: scale(0.95);
-            z-index: 1000;
-            border-color: var(--app-green);
-        }
-        .reorder-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
-        .reorder-name { font-weight: 800; font-size: 15px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #333; }
-        .reorder-id { font-size: 12px; color: #aaa; font-family: monospace; }
-        .reorder-handle { 
-            font-size: 20px; color: #ddd; cursor: grab; padding: 10px; margin-right: -10px;
-            touch-action: none; display: flex; align-items: center;
-        }
+    .btn-full { 
+        flex: 1; padding: 18px; border: none; font-weight: 800; cursor: pointer; 
+        font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; 
+        border-radius: 20px; 
+        display: flex; align-items: center; justify-content: center;
+        transition: transform 0.1s, box-shadow 0.2s;
+        box-shadow: var(--shadow-md);
+    }
+    .btn-full:active { transform: scale(0.96); box-shadow: none; }
+    
+    .btn-green { background: var(--app-green); color: white; box-shadow: 0 8px 20px rgba(3, 199, 90, 0.3); }
+    .btn-black { background: #222; color: white; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+    .btn-outline { background: white; border: 2px solid #eee; color: var(--text-dark); margin-top: 12px; box-shadow: none; }
 
-        /* Custom Dialog UI */
-        .dialog-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 3000;
-            display: none; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.2s; backdrop-filter: blur(5px);
-        }
-        .dialog-overlay.active { opacity: 1; }
-        .dialog-box {
-            background: white; width: 85%; max-width: 340px;
-            padding: 32px 24px; border-radius: 28px; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-            transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            text-align: center;
-        }
-        .dialog-overlay.active .dialog-box { transform: scale(1); }
-        .dialog-title { font-size: 18px; font-weight: 900; margin-bottom: 16px; text-transform: uppercase; color: #222; }
-        .dialog-msg { font-size: 14px; color: #666; margin-bottom: 32px; line-height: 1.6; white-space: pre-wrap; word-break: keep-all; }
-        .dialog-actions { display: flex; gap: 12px; }
-        .dialog-btn {
-            flex: 1; padding: 16px; border: none; border-radius: 16px;
-            font-size: 13px; font-weight: 800; cursor: pointer; text-transform: uppercase;
-            transition: transform 0.1s;
-        }
-        .dialog-btn:active { transform: scale(0.95); }
-        .dialog-btn-cancel { background: #f2f4f6; color: #666; }
-        .dialog-btn-confirm { background: var(--app-green); color: white; box-shadow: 0 4px 12px rgba(3, 199, 90, 0.3); }
-        .dialog-btn-danger { background: var(--danger); color: white; box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3); }
-    </style>
+    /* 커스텀 다이얼로그 */
+    .dialog-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 3000;
+        display: none; justify-content: center; align-items: center;
+        opacity: 0; transition: opacity 0.2s; backdrop-filter: blur(5px);
+    }
+    .dialog-overlay.active { opacity: 1; }
+    .dialog-box {
+        background: white; width: 85%; max-width: 340px;
+        padding: 32px 24px; border-radius: 28px; 
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        text-align: center;
+    }
+    .dialog-overlay.active .dialog-box { transform: scale(1); }
+    .dialog-title { font-size: 18px; font-weight: 900; margin-bottom: 16px; text-transform: uppercase; color: #222; }
+    .dialog-msg { font-size: 14px; color: #666; margin-bottom: 32px; line-height: 1.6; white-space: pre-wrap; word-break: keep-all; }
+    .dialog-actions { display: flex; gap: 12px; }
+    .dialog-btn {
+        flex: 1; padding: 16px; border: none; border-radius: 16px;
+        font-size: 13px; font-weight: 800; cursor: pointer; text-transform: uppercase;
+        transition: transform 0.1s;
+    }
+    .dialog-btn:active { transform: scale(0.95); }
+    .dialog-btn-cancel { background: #f2f4f6; color: #666; }
+    .dialog-btn-confirm { background: var(--app-green); color: white; box-shadow: 0 4px 12px rgba(3, 199, 90, 0.3); }
+    .dialog-btn-danger { background: var(--danger); color: white; box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3); }
+</style>
 </head>
 <body>
 
@@ -303,33 +294,16 @@
         <div class="app-bar">
             <button class="text-btn left" onclick="openSettings()">INFO</button>
             <h2 id="mainPackTitle">SKIN LIST</h2>
-            <button class="text-btn right" onclick="openExportScreen()">EXPORT</button>
+            <button class="text-btn right" onclick="checkAndExport()">EXPORT</button>
         </div>
         <div class="content"><div class="skin-grid" id="skinGrid"></div></div>
         
         <div class="bottom-bar">
             <label for="fileAdd" class="btn-full btn-black" style="cursor:pointer;">+ ADD SKIN</label>
-            <button class="btn-full btn-green" onclick="openExportScreen()">EXPORT</button>
+            <button class="btn-full btn-green" onclick="checkAndExport()">EXPORT</button>
         </div>
         
         <input type="file" id="fileAdd" accept=".png, .tga, image/png, image/x-tga, image/targa" multiple style="display:none" onchange="handleAddFiles(this)">
-    </div>
-
-    <div id="exportScreen" class="screen">
-        <div class="app-bar">
-            <button class="text-btn left" onclick="closeReorderScreen()">CANCEL</button>
-            <h2>REORDER</h2>
-            <div class="text-btn right"></div>
-        </div>
-        <div class="content">
-            <div style="margin-bottom:16px; font-size:13px; color:#888; text-transform:uppercase; font-weight:800; letter-spacing:1px; text-align:center;">
-                Drag handle (≡) to reorder
-            </div>
-            <div id="reorderList" class="reorder-list"></div>
-        </div>
-        <div class="bottom-bar">
-            <button class="btn-full btn-green" onclick="checkAndExport()">DOWNLOAD</button>
-        </div>
     </div>
 
     <div id="bottomSheetOverlay" onclick="closeSheet()"></div>
@@ -362,517 +336,569 @@
     </div>
 
     <script>
-        let lastWidth = window.innerWidth;
-        function setAppHeight() { document.documentElement.style.setProperty('--vh', `${window.innerHeight}px`); }
-        setAppHeight(); window.addEventListener('resize', () => { if (window.innerWidth !== lastWidth) { lastWidth = window.innerWidth; setAppHeight(); } });
+    let lastWidth = window.innerWidth;
+    function setAppHeight() { document.documentElement.style.setProperty('--vh', `${window.innerHeight}px`); }
+    setAppHeight(); window.addEventListener('resize', () => { if (window.innerWidth !== lastWidth) { lastWidth = window.innerWidth; setAppHeight(); } });
 
-        window.onbeforeunload = function() {
-            if (isProjectActive) return "Unsaved changes will be lost.";
-        };
+    window.onbeforeunload = function() {
+        if (isProjectActive) return "Unsaved changes will be lost.";
+    };
 
-        // --- CUSTOM DIALOG ---
-        let dialogResolver = null;
-        function showCustomConfirm(title, msg, isDanger = false) {
-            return new Promise(resolve => {
-                document.getElementById('dialogTitle').innerText = title;
-                document.getElementById('dialogMsg').innerText = msg;
-                const btn = document.getElementById('dialogConfirmBtn');
-                if(isDanger) { btn.className='dialog-btn dialog-btn-danger'; btn.innerText="DELETE"; }
-                else { btn.className='dialog-btn dialog-btn-confirm'; btn.innerText="CONFIRM"; }
-                const overlay = document.getElementById('customDialog');
-                overlay.style.display = 'flex'; setTimeout(() => overlay.classList.add('active'), 10);
-                dialogResolver = resolve;
-            });
-        }
-        function showCustomAlert(title, msg) {
-            return new Promise(resolve => {
-                document.getElementById('dialogTitle').innerText = title;
-                document.getElementById('dialogMsg').innerText = msg;
-                const btn = document.getElementById('dialogConfirmBtn');
-                btn.className = 'dialog-btn dialog-btn-confirm'; btn.innerText = "OK";
-                document.querySelector('.dialog-btn-cancel').style.display = 'none';
-                const overlay = document.getElementById('customDialog');
-                overlay.style.display = 'flex'; setTimeout(() => overlay.classList.add('active'), 10);
-                dialogResolver = (val) => { document.querySelector('.dialog-btn-cancel').style.display = 'block'; resolve(val); };
-            });
-        }
-        function closeCustomDialog(result) {
+    // --- CUSTOM DIALOG ---
+    let dialogResolver = null;
+    function showCustomConfirm(title, msg, isDanger = false) {
+        return new Promise(resolve => {
+            document.getElementById('dialogTitle').innerText = title;
+            document.getElementById('dialogMsg').innerText = msg;
+            const btn = document.getElementById('dialogConfirmBtn');
+            if(isDanger) { btn.className='dialog-btn dialog-btn-danger'; btn.innerText="DELETE"; }
+            else { btn.className='dialog-btn dialog-btn-confirm'; btn.innerText="CONFIRM"; }
             const overlay = document.getElementById('customDialog');
-            overlay.classList.remove('active');
-            setTimeout(() => { overlay.style.display = 'none'; if (dialogResolver) dialogResolver(result); dialogResolver = null; }, 200);
-        }
+            overlay.style.display = 'flex'; setTimeout(() => overlay.classList.add('active'), 10);
+            dialogResolver = resolve;
+        });
+    }
+    function showCustomAlert(title, msg) {
+        return new Promise(resolve => {
+            document.getElementById('dialogTitle').innerText = title;
+            document.getElementById('dialogMsg').innerText = msg;
+            const btn = document.getElementById('dialogConfirmBtn');
+            btn.className = 'dialog-btn dialog-btn-confirm'; btn.innerText = "OK";
+            document.querySelector('.dialog-btn-cancel').style.display = 'none';
+            const overlay = document.getElementById('customDialog');
+            overlay.style.display = 'flex'; setTimeout(() => overlay.classList.add('active'), 10);
+            dialogResolver = (val) => { document.querySelector('.dialog-btn-cancel').style.display = 'block'; resolve(val); };
+        });
+    }
+    function closeCustomDialog(result) {
+        const overlay = document.getElementById('customDialog');
+        overlay.classList.remove('active');
+        setTimeout(() => { overlay.style.display = 'none'; if (dialogResolver) dialogResolver(result); dialogResolver = null; }, 200);
+    }
 
-        // --- DATA ---
-        let projectData = { packName: "My Pack", localizationName: "my_pack", serializeName: "my_pack" };
-        let skins = [];
-        let selectedIndex = -1;
-        let skinFiles = new Map();
-        let isProjectActive = false;
+    // --- DATA ---
+    let projectData = { packName: "My Pack", localizationName: "my_pack", serializeName: "my_pack" };
+    let skins = [];
+    let selectedIndex = -1;
+    let skinFiles = new Map();
+    let isProjectActive = false;
 
-        // --- VALIDATION & UTILS ---
-        function validateNoSpace(input) {
-            const hasSpace = /\s/.test(input.value);
-            if (hasSpace) input.classList.add('input-error'); else input.classList.remove('input-error');
-            return !hasSpace;
-        }
-        function validateMandatory(input) {
-            const val = input.value;
-            const isInvalid = val.trim() === "" || /\s/.test(val);
-            if (isInvalid) input.classList.add('input-error'); 
-            else input.classList.remove('input-error');
-            return !isInvalid;
-        }
-        function handleSetupInput(input) { validateMandatory(input); checkSetupButton(); }
-        function checkSetupButton() {
-            const locInput = document.getElementById('localizationName');
-            const serInput = document.getElementById('serializeName');
-            const locInvalid = locInput.value.trim() === "" || /\s/.test(locInput.value);
-            const serInvalid = serInput.value.trim() === "" || /\s/.test(serInput.value);
-            document.getElementById('confirmBtn').disabled = locInvalid || serInvalid;
-        }
-        function getSafeFileName(name) {
-            return name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '');
-        }
+    // --- VALIDATION & UTILS ---
+    function validateNoSpace(input) {
+        const hasSpace = /\s/.test(input.value);
+        if (hasSpace) input.classList.add('input-error'); else input.classList.remove('input-error');
+        return !hasSpace;
+    }
+    function validateMandatory(input) {
+        const val = input.value;
+        const isInvalid = val.trim() === "" || /\s/.test(val);
+        if (isInvalid) input.classList.add('input-error'); 
+        else input.classList.remove('input-error');
+        return !isInvalid;
+    }
+    function handleSetupInput(input) { validateMandatory(input); checkSetupButton(); }
+    function checkSetupButton() {
+        const locInput = document.getElementById('localizationName');
+        const serInput = document.getElementById('serializeName');
+        const locInvalid = locInput.value.trim() === "" || /\s/.test(locInput.value);
+        const serInvalid = serInput.value.trim() === "" || /\s/.test(serInput.value);
+        document.getElementById('confirmBtn').disabled = locInvalid || serInvalid;
+    }
+    function getSafeFileName(name) {
+        return name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '');
+    }
 
-        // --- NAV ---
-        function navTo(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-        function openWizard() {
-            const loc = document.getElementById('localizationName');
-            const ser = document.getElementById('serializeName');
-            document.getElementById('packName').value = projectData.packName;
-            loc.value = projectData.localizationName;
-            ser.value = projectData.serializeName;
-            loc.classList.remove('input-error'); ser.classList.remove('input-error');
-            navTo('setupScreen'); checkSetupButton();
-        }
-        function openSettings() { openWizard(); }
-        async function handleSetupBack() { 
-            if (isProjectActive) navTo('mainScreen'); 
-            else if(await showCustomConfirm("EXIT WIZARD", "Go back to start screen?\nUnsaved changes will be lost.")) navTo('startScreen'); 
-        }
-        function completeSetup() {
-            projectData.packName = document.getElementById('packName').value;
-            projectData.localizationName = document.getElementById('localizationName').value;
-            projectData.serializeName = document.getElementById('serializeName').value;
-            document.getElementById('mainPackTitle').innerText = projectData.packName;
-            isProjectActive = true; navTo('mainScreen');
-        }
+    // --- NAV ---
+    function navTo(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+    function openWizard() {
+        const loc = document.getElementById('localizationName');
+        const ser = document.getElementById('serializeName');
+        document.getElementById('packName').value = projectData.packName;
+        loc.value = projectData.localizationName;
+        ser.value = projectData.serializeName;
+        loc.classList.remove('input-error'); ser.classList.remove('input-error');
+        navTo('setupScreen'); checkSetupButton();
+    }
+    function openSettings() { openWizard(); }
+    async function handleSetupBack() { 
+        if (isProjectActive) navTo('mainScreen'); 
+        else if(await showCustomConfirm("EXIT WIZARD", "Go back to start screen?\nUnsaved changes will be lost.")) navTo('startScreen'); 
+    }
+    function completeSetup() {
+        projectData.packName = document.getElementById('packName').value;
+        projectData.localizationName = document.getElementById('localizationName').value;
+        projectData.serializeName = document.getElementById('serializeName').value;
+        document.getElementById('mainPackTitle').innerText = projectData.packName;
+        isProjectActive = true; navTo('mainScreen');
+    }
 
-        // --- FILES ---
-        async function handleAddFiles(input) {
-            const files = Array.from(input.files); let hasInvalidFile = false;
-            files.forEach(file => {
-                const lower = file.name.toLowerCase();
-                if (!lower.endsWith('.png') && !lower.endsWith('.tga')) { hasInvalidFile = true; return; }
-                
-                let baseName = file.name.replace(/\.[^/.]+$/, "");
-                let safeName = getSafeFileName(baseName);
-                let fileName = safeName + ".png";
-
-                let counter = 1;
-                while (skinFiles.has(fileName)) {
-                    fileName = `${safeName}_${counter}.png`;
-                    counter++;
-                }
-
-                skins.push({ 
-                    localization_name: safeName, displayName: baseName, 
-                    geometry: 'geometry.humanoid.custom', texture: fileName, skinType: 'normal',
-                    enable_attachables: true,
-                    animations: [] 
-                });
-                skinFiles.set(fileName, file);
-            });
-            if (hasInvalidFile) await showCustomAlert("INVALID FILES", "Some files were skipped.\nOnly .png and .tga are allowed.");
-            renderGrid(); input.value = '';
-            if (skins.length > 0 && !hasInvalidFile) openSkinSettings(skins.length - 1);
-        }
-
-        // --- GRID ---
-        function renderGrid() {
-            const grid = document.getElementById('skinGrid');
-            grid.innerHTML = ''; 
-            skins.forEach((s, i) => {
-                grid.innerHTML += `
-                <div class="skin-card" onclick="openSkinSettings(${i})">
-                    <div class="order-tag">${s.displayName}</div>
-                    <div class="preview-row">
-                        <canvas id="preview_f_${i}" width="16" height="32" class="skin-canvas"></canvas>
-                        <canvas id="preview_b_${i}" width="16" height="32" class="skin-canvas"></canvas>
-                    </div>
-                </div>`;
-            });
-            skins.forEach((s, i) => updateSkinCanvas(i));
-        }
-        function updateSkinCanvas(index) {
-            const s = skins[index]; const f = skinFiles.get(s.texture); if (!f) return;
-            const img = new Image(); img.src = URL.createObjectURL(f);
-            img.onload = () => { const slim = s.skinType==='slim'; drawPaperDoll(img, document.getElementById(`preview_f_${index}`), false, slim); drawPaperDoll(img, document.getElementById(`preview_b_${index}`), true, slim); };
-        }
-        function drawPaperDoll(img, canvas, isBack, isSlim) {
-            if(!canvas) return; const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,16,32);
-            const d = (sx,sy,w,h,dx,dy,dw,dh) => ctx.drawImage(img,sx,sy,w,h,dx,dy,dw,dh);
-            const aw = isSlim?3:4;
-            if(!isBack) {
-                d(8,8,8,8,4,0,8,8); d(40,8,8,8,4,0,8,8); d(20,20,8,12,4,8,8,12); d(20,36,8,12,4,8,8,12);
-                d(44,20,aw,12,4-aw,8,aw,12); d(44,36,aw,12,4-aw,8,aw,12); d(36,52,aw,12,12,8,aw,12); d(52,52,aw,12,12,8,aw,12);
-                d(4,20,4,12,4,20,4,12); d(4,36,4,12,4,20,4,12); d(20,52,4,12,8,20,4,12); d(4,52,4,12,8,20,4,12);
-            } else {
-                d(24,8,8,8,4,0,8,8); d(56,8,8,8,4,0,8,8); d(32,20,8,12,4,8,8,12); d(32,36,8,12,4,8,8,12);
-                const rx = isSlim?51:52; d(rx,20,aw,12,12,8,aw,12); d(rx,36,aw,12,12,8,aw,12);
-                const lx = isSlim?43:44; const ls = isSlim?59:60; d(lx,52,aw,12,4-aw,8,aw,12); d(ls,52,aw,12,4-aw,8,aw,12);
-                d(12,20,4,12,8,20,4,12); d(12,36,4,12,8,20,4,12); d(28,52,4,12,4,20,4,12); d(12,52,4,12,4,20,4,12);
-            }
-        }
-
-        // --- BOTTOM SHEET ---
-        const sheet = document.getElementById('bottomSheet');
-        const handle = document.getElementById('sheetHandle');
-        let startY = 0, currentY = 0, isDragging = false, lastY = 0, lastTime = 0, velocity = 0;
-        handle.addEventListener('touchstart', e => { startY = e.touches[0].clientY; lastY = startY; lastTime = Date.now(); velocity = 0; isDragging = true; sheet.style.transition = 'none'; }, {passive: false});
-        document.addEventListener('touchmove', e => { if (!isDragging) return; const cy = e.touches[0].clientY; const dt = Date.now() - lastTime; if (dt > 0) velocity = (cy - lastY) / dt; lastY = cy; lastTime = Date.now(); const delta = cy - startY; if (delta > 0) { e.preventDefault(); currentY = delta; sheet.style.transform = `translateY(${currentY}px)`; } }, {passive: false});
-        document.addEventListener('touchend', () => { if (!isDragging) return; isDragging = false; sheet.style.transition = 'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1)'; if (currentY > 150 || velocity > 0.5) { sheet.style.transform = `translateY(110%)`; document.getElementById('bottomSheetOverlay').style.opacity = '0'; setTimeout(() => { closeSheet(true); }, 300); } else { sheet.style.transform = `translateY(0)`; } currentY = 0; velocity = 0; });
-
-        function closeSheet(skipAnimation = false) {
-            const overlay = document.getElementById('bottomSheetOverlay');
-            if (!skipAnimation) {
-                sheet.classList.remove('active');
-                sheet.style.transform = '';
-                overlay.style.opacity = '0';
-                setTimeout(() => { overlay.style.display = 'none'; }, 300);
-            } else {
-                sheet.classList.remove('active');
-                sheet.style.transform = '';
-                overlay.style.display = 'none';
-            }
-        }
-
-        // --- SHEET CONTENTS ---
-        function openSkinSettings(i) {
-            selectedIndex = i;
-            const s = skins[i];
-            sheet.style.transform = ''; 
+    // --- FILES ---
+    async function handleAddFiles(input) {
+        const files = Array.from(input.files); let hasInvalidFile = false;
+        files.forEach(file => {
+            const lower = file.name.toLowerCase();
+            if (!lower.endsWith('.png') && !lower.endsWith('.tga')) { hasInvalidFile = true; return; }
             
-            const displayTextureName = s.texture.replace(/\.(png|tga)$/i, "");
+            let baseName = file.name.replace(/\.[^/.]+$/, "");
+            let safeName = getSafeFileName(baseName);
+            let fileName = safeName + ".png";
 
-            document.getElementById('sheetForm').innerHTML = `
-                <div class="form-group"><label>Display Name</label><input type="text" value="${s.displayName}" oninput="handleDisplayNameChange(this.value, ${i})"></div>
-                <div class="form-group"><label>ID (No Spaces)</label><input type="text" value="${s.localization_name}" oninput="handleLocIdChange(this, ${i})"></div>
-                <div class="form-group"><label>Texture Name</label><input type="text" value="${displayTextureName}" onchange="updateFileName(this.value, ${i})"></div>
-                
-                <div class="form-group">
-                    <label>Model Type</label>
-                    <div class="segment-control">
-                        <button class="segment-btn ${s.skinType==='normal'?'active':''}" onclick="handleTypeChange('normal', ${i}, this)">Normal (Steve)</button>
-                        <button class="segment-btn ${s.skinType==='slim'?'active':''}" onclick="handleTypeChange('slim', ${i}, this)">Slim (Alex)</button>
-                    </div>
+            let counter = 1;
+            while (skinFiles.has(fileName)) {
+                fileName = `${safeName}_${counter}.png`;
+                counter++;
+            }
+
+            skins.push({ 
+                localization_name: safeName, displayName: baseName, 
+                geometry: 'geometry.humanoid.custom', texture: fileName, skinType: 'normal',
+                enable_attachables: true,
+                animations: [] 
+            });
+            skinFiles.set(fileName, file);
+        });
+        if (hasInvalidFile) await showCustomAlert("INVALID FILES", "Some files were skipped.\nOnly .png and .tga are allowed.");
+        renderGrid(); input.value = '';
+        if (skins.length > 0 && !hasInvalidFile) openSkinSettings(skins.length - 1);
+    }
+
+    // --- GRID ---
+    function renderGrid() {
+        const grid = document.getElementById('skinGrid');
+        grid.innerHTML = ''; 
+        skins.forEach((s, i) => {
+            grid.innerHTML += `
+            <div class="skin-card" onclick="openSkinSettings(${i})">
+                <div class="order-tag">${s.displayName}</div>
+                <div class="preview-row">
+                    <canvas id="preview_f_${i}" width="16" height="32" class="skin-canvas"></canvas>
+                    <canvas id="preview_b_${i}" width="16" height="32" class="skin-canvas"></canvas>
                 </div>
-                
-                <details>
-                    <summary>Advanced Settings</summary>
-                    <div class="adv-group">
-                        <div class="adv-row">
-                            <label>Enable Armor/Elytra</label>
-                            <input type="checkbox" ${s.enable_attachables ? 'checked' : ''} onchange="skins[${i}].enable_attachables = this.checked">
-                        </div>
-                        <div class="form-group" style="margin-bottom:8px;">
-                            <label>Animations (Key : Value)</label>
-                        </div>
-                        <div id="animListContainer" class="anim-list-container"></div>
-                        <button class="btn-add-anim" onclick="addAnimRow(${i})">+ ADD ANIMATION</button>
-                    </div>
-                </details>
-            `;
+            </div>`;
+        });
+        skins.forEach((s, i) => updateSkinCanvas(i));
+    }
+    function updateSkinCanvas(index) {
+        const s = skins[index]; const f = skinFiles.get(s.texture); if (!f) return;
+        const img = new Image(); img.src = URL.createObjectURL(f);
+        img.onload = () => { const slim = s.skinType==='slim'; drawPaperDoll(img, document.getElementById(`preview_f_${index}`), false, slim); drawPaperDoll(img, document.getElementById(`preview_b_${index}`), true, slim); };
+    }
+    function drawPaperDoll(img, canvas, isBack, isSlim) {
+        if(!canvas) return; const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,16,32);
+        const d = (sx,sy,w,h,dx,dy,dw,dh) => ctx.drawImage(img,sx,sy,w,h,dx,dy,dw,dh);
+        const aw = isSlim?3:4;
+        if(!isBack) {
+            d(8,8,8,8,4,0,8,8); d(40,8,8,8,4,0,8,8); d(20,20,8,12,4,8,8,12); d(20,36,8,12,4,8,8,12);
+            d(44,20,aw,12,4-aw,8,aw,12); d(44,36,aw,12,4-aw,8,aw,12); d(36,52,aw,12,12,8,aw,12); d(52,52,aw,12,12,8,aw,12);
+            d(4,20,4,12,4,20,4,12); d(4,36,4,12,4,20,4,12); d(20,52,4,12,8,20,4,12); d(4,52,4,12,8,20,4,12);
+        } else {
+            d(24,8,8,8,4,0,8,8); d(56,8,8,8,4,0,8,8); d(32,20,8,12,4,8,8,12); d(32,36,8,12,4,8,8,12);
+            const rx = isSlim?51:52; d(rx,20,aw,12,12,8,aw,12); d(rx,36,aw,12,12,8,aw,12);
+            const lx = isSlim?43:44; const ls = isSlim?59:60; d(lx,52,aw,12,4-aw,8,aw,12); d(ls,52,aw,12,4-aw,8,aw,12);
+            d(12,20,4,12,8,20,4,12); d(12,36,4,12,8,20,4,12); d(28,52,4,12,4,20,4,12); d(12,52,4,12,4,20,4,12);
+        }
+    }
+
+    // --- BOTTOM SHEET ---
+    const sheet = document.getElementById('bottomSheet');
+    const handle = document.getElementById('sheetHandle');
+    let startY = 0, currentY = 0, isDraggingSheet = false, lastY = 0, lastTime = 0, velocity = 0;
+    handle.addEventListener('touchstart', e => { startY = e.touches[0].clientY; lastY = startY; lastTime = Date.now(); velocity = 0; isDraggingSheet = true; sheet.style.transition = 'none'; }, {passive: false});
+    document.addEventListener('touchmove', e => { if (!isDraggingSheet) return; const cy = e.touches[0].clientY; const dt = Date.now() - lastTime; if (dt > 0) velocity = (cy - lastY) / dt; lastY = cy; lastTime = Date.now(); const delta = cy - startY; if (delta > 0) { e.preventDefault(); currentY = delta; sheet.style.transform = `translateY(${currentY}px)`; } }, {passive: false});
+    document.addEventListener('touchend', () => { if (!isDraggingSheet) return; isDraggingSheet = false; sheet.style.transition = 'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1)'; if (currentY > 150 || velocity > 0.5) { sheet.style.transform = `translateY(110%)`; document.getElementById('bottomSheetOverlay').style.opacity = '0'; setTimeout(() => { closeSheet(true); }, 300); } else { sheet.style.transform = `translateY(0)`; } currentY = 0; velocity = 0; });
+
+    function closeSheet(skipAnimation = false) {
+        const overlay = document.getElementById('bottomSheetOverlay');
+        if (!skipAnimation) {
+            sheet.classList.remove('active');
+            sheet.style.transform = '';
+            overlay.style.opacity = '0';
+            setTimeout(() => { overlay.style.display = 'none'; }, 300);
+        } else {
+            sheet.classList.remove('active');
+            sheet.style.transform = '';
+            overlay.style.display = 'none';
+        }
+    }
+
+    // --- SHEET CONTENTS ---
+    function openSkinSettings(i) {
+        selectedIndex = i;
+        const s = skins[i];
+        sheet.style.transform = ''; 
+        
+        const displayTextureName = s.texture.replace(/\.(png|tga)$/i, "");
+
+        // 복제된 스킨인지 확인 (파일 변경 제한용)
+        const firstInstanceIndex = skins.findIndex(skin => skin.texture === s.texture);
+        const isDuplicate = firstInstanceIndex !== i;
+        const disabledAttr = isDuplicate ? 'disabled' : '';
+        const inputClass = isDuplicate ? 'input-disabled' : '';
+        const iconColor = isDuplicate ? '#ccc' : '#333';
+
+        document.getElementById('sheetForm').innerHTML = `
+            <div class="form-group"><label>Display Name</label><input type="text" value="${s.displayName}" oninput="handleDisplayNameChange(this.value, ${i})"></div>
+            <div class="form-group"><label>ID (No Spaces)</label><input type="text" value="${s.localization_name}" oninput="handleLocIdChange(this, ${i})"></div>
             
-            renderAnimRows(i);
-            document.getElementById('bottomSheetOverlay').style.display = 'block';
-            setTimeout(() => { document.getElementById('bottomSheetOverlay').style.opacity = '1'; sheet.classList.add('active'); }, 10);
-        }
+            <div class="form-group">
+                <label>Texture</label>
+                <div class="input-group">
+                    <input type="text" class="${inputClass}" value="${displayTextureName}" ${disabledAttr} onchange="updateFileName(this.value, ${i})">
+                    <button class="btn-icon" ${disabledAttr} onclick="triggerChangeFile(${i})" title="Change File">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                            <polyline points="13 2 13 9 20 9"></polyline>
+                        </svg>
+                    </button>
+                </div>
+                <input type="file" id="hiddenFileInput_${i}" accept=".png, .tga, image/png" style="display:none" onchange="handleChangeFile(this, ${i})">
+            </div>
+            
+            <div class="form-group">
+                <label>Model Type</label>
+                <div class="segment-control">
+                    <button class="segment-btn ${s.skinType==='normal'?'active':''}" onclick="handleTypeChange('normal', ${i}, this)">Normal (Steve)</button>
+                    <button class="segment-btn ${s.skinType==='slim'?'active':''}" onclick="handleTypeChange('slim', ${i}, this)">Slim (Alex)</button>
+                </div>
+            </div>
+            
+            <details>
+                <summary>Advanced Settings</summary>
+                <div class="adv-group">
+                    <div class="adv-row">
+                        <label>Enable Armor/Elytra</label>
+                        <input type="checkbox" ${s.enable_attachables ? 'checked' : ''} onchange="skins[${i}].enable_attachables = this.checked">
+                    </div>
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <label>Animations (Key : Value)</label>
+                    </div>
+                    <div id="animListContainer" class="anim-list-container"></div>
+                    <button class="btn-add-anim" onclick="addAnimRow(${i})">+ ADD ANIMATION</button>
+                </div>
+            </details>
+        `;
+        
+        renderAnimRows(i);
+        document.getElementById('bottomSheetOverlay').style.display = 'block';
+        setTimeout(() => { document.getElementById('bottomSheetOverlay').style.opacity = '1'; sheet.classList.add('active'); }, 10);
+    }
 
-        function renderAnimRows(skinIndex) {
-            const container = document.getElementById('animListContainer');
-            if (!container) return;
-            const currentAnims = skins[skinIndex].animations || [];
-            let html = '';
-            currentAnims.forEach((anim, animIndex) => {
-                html += `
-                <div class="anim-row-item">
-                    <input class="anim-input" placeholder="Key (e.g. holding)" value="${anim.key || ''}" oninput="updateAnimData(${skinIndex}, ${animIndex}, 'key', this.value)">
-                    <span style="font-weight:bold">:</span>
-                    <input class="anim-input" placeholder="Value (e.g. anim.idle)" value="${anim.value || ''}" oninput="updateAnimData(${skinIndex}, ${animIndex}, 'value', this.value)">
-                    <button class="btn-del-anim" onclick="removeAnimRow(${skinIndex}, ${animIndex})">X</button>
-                </div>`;
-            });
-            container.innerHTML = html;
-        }
+    // 파일 변경 기능
+    function triggerChangeFile(index) { document.getElementById(`hiddenFileInput_${index}`).click(); }
 
-        function addAnimRow(skinIndex) {
-            if (!skins[skinIndex].animations) skins[skinIndex].animations = [];
-            skins[skinIndex].animations.push({ key: "", value: "" });
+    async function handleChangeFile(input, index) {
+        if (!input.files || input.files.length === 0) return;
+        const file = input.files[0];
+        const lower = file.name.toLowerCase();
+        if (!lower.endsWith('.png') && !lower.endsWith('.tga')) { await showCustomAlert("INVALID FILE", "Only .png or .tga files are allowed."); input.value = ''; return; }
+
+        const currentTextureName = skins[index].texture;
+        skinFiles.set(currentTextureName, file); // 맵 업데이트
+        await showCustomAlert("SUCCESS", "Texture file updated for all linked skins.");
+        
+        skins.forEach((s, idx) => { if (s.texture === currentTextureName) updateSkinCanvas(idx); });
+        input.value = '';
+    }
+
+    function renderAnimRows(skinIndex) {
+        const container = document.getElementById('animListContainer');
+        if (!container) return;
+        const currentAnims = skins[skinIndex].animations || [];
+        let html = '';
+        currentAnims.forEach((anim, animIndex) => {
+            html += `
+            <div class="anim-row-item">
+                <input class="anim-input" placeholder="Key (e.g. holding)" value="${anim.key || ''}" oninput="updateAnimData(${skinIndex}, ${animIndex}, 'key', this.value)">
+                <span style="font-weight:bold">:</span>
+                <input class="anim-input" placeholder="Value (e.g. anim.idle)" value="${anim.value || ''}" oninput="updateAnimData(${skinIndex}, ${animIndex}, 'value', this.value)">
+                <button class="btn-del-anim" onclick="removeAnimRow(${skinIndex}, ${animIndex})">X</button>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function addAnimRow(skinIndex) {
+        if (!skins[skinIndex].animations) skins[skinIndex].animations = [];
+        skins[skinIndex].animations.push({ key: "", value: "" });
+        renderAnimRows(skinIndex);
+    }
+
+    async function removeAnimRow(skinIndex, animIndex) {
+        if (await showCustomConfirm("DELETE ANIMATION", "Remove this animation line?", true)) {
+            skins[skinIndex].animations.splice(animIndex, 1);
             renderAnimRows(skinIndex);
         }
+    }
 
-        async function removeAnimRow(skinIndex, animIndex) {
-            if (await showCustomConfirm("DELETE ANIMATION", "Remove this animation line?", true)) {
-                skins[skinIndex].animations.splice(animIndex, 1);
-                renderAnimRows(skinIndex);
-            }
+    function updateAnimData(skinIndex, animIndex, field, val) { skins[skinIndex].animations[animIndex][field] = val; }
+
+    function handleDisplayNameChange(val, i) { 
+        skins[i].displayName = val; 
+        const tag = document.querySelectorAll('.order-tag')[i];
+        if(tag) tag.innerText = val;
+    }
+
+    function handleLocIdChange(input, i) { validateMandatory(input); skins[i].localization_name = input.value; }
+    
+    function handleTypeChange(val, i, btnElement) { 
+        skins[i].skinType = val; 
+        skins[i].geometry = (val==='slim'?'geometry.humanoid.customSlim':'geometry.humanoid.custom'); 
+        const parent = btnElement.parentElement;
+        parent.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+        btnElement.classList.add('active');
+        updateSkinCanvas(i); 
+    }
+    
+    function updateFileName(val, i) {
+        val = val.trim();
+        const oldTextureName = skins[i].texture;
+        if (!val || getSafeFileName(val.replace(/\.png$/i, '')) + ".png" === oldTextureName) return; 
+
+        if (!val.toLowerCase().endsWith('.png')) { val += '.png'; }
+        let base = val.replace(/\.png$/i, '');
+        val = getSafeFileName(base) + ".png";
+
+        if (skinFiles.has(val)) { 
+            showCustomAlert("ERROR", "File name already exists."); 
+            const texInput = document.querySelector('#sheetForm .input-group input');
+            if(texInput) texInput.value = oldTextureName.replace(/\.(png|tga)$/i, "");
+            return; 
         }
 
-        function updateAnimData(skinIndex, animIndex, field, val) {
-            skins[skinIndex].animations[animIndex][field] = val;
+        if (skinFiles.has(oldTextureName)) { 
+            const f = skinFiles.get(oldTextureName); 
+            skinFiles.delete(oldTextureName); 
+            skinFiles.set(val, f); 
         }
-
-        function handleDisplayNameChange(val, i) { 
-            skins[i].displayName = val; 
-            const tag = document.querySelectorAll('.order-tag')[i];
-            if(tag) tag.innerText = val;
-        }
-
-        function handleLocIdChange(input, i) { validateMandatory(input); skins[i].localization_name = input.value; }
         
-        function handleTypeChange(val, i, btnElement) { 
-            skins[i].skinType = val; 
-            skins[i].geometry = (val==='slim'?'geometry.humanoid.customSlim':'geometry.humanoid.custom'); 
-            const parent = btnElement.parentElement;
-            parent.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
-            btnElement.classList.add('active');
-            updateSkinCanvas(i); 
+        skins[i].texture = val;
+        // 연결된 모든 스킨 업데이트
+        skins.forEach(s => { if (s.texture === oldTextureName) s.texture = val; });
+
+        const texInput = document.querySelector('#sheetForm .input-group input');
+        if(texInput) texInput.value = getSafeFileName(base);
+    }
+
+    function duplicateCurrentSkin() {
+        const src = skins[selectedIndex];
+        const newName = src.displayName + " Copy";
+        const newId = src.localization_name + "_copy";
+        const newSkin = JSON.parse(JSON.stringify(src));
+        newSkin.displayName = newName;
+        newSkin.localization_name = newId;
+        skins.splice(selectedIndex + 1, 0, newSkin);
+        closeSheet();
+        renderGrid();
+    }
+
+    async function deleteCurrentSkin() { 
+        if(await showCustomConfirm("DELETE SKIN", "Are you sure you want to delete this skin?", true)) {
+            const textureName = skins[selectedIndex].texture;
+            skins.splice(selectedIndex, 1);
+            const isTextureUsed = skins.some(s => s.texture === textureName);
+            if (!isTextureUsed && skinFiles.has(textureName)) { skinFiles.delete(textureName); }
+            closeSheet(); 
+            renderGrid(); 
         }
+    }
+
+    // --- 3D VIEW (Ported from First Code) ---
+    let scene, camera, renderer, modelGroup; let is3DInit = false;
+    
+    function start3DPreview() { 
+        document.getElementById('viewer3D').style.display = 'flex'; 
+        if (is3DInit && modelGroup) clearModelGroup(); 
+        setTimeout(() => { 
+            if (!is3DInit) { 
+                init3D(); 
+                is3DInit = true; 
+            } else { 
+                updateViewerSize(); 
+            } 
+            loadSkinModel(skins[selectedIndex]); 
+        }, 10); 
+    }
+    
+    function close3DViewer() { document.getElementById('viewer3D').style.display = 'none'; }
+    
+    function updateViewerSize() { 
+        const container = document.getElementById('canvas3D'); 
+        if (renderer && container) { 
+            const w = container.clientWidth; 
+            const h = container.clientHeight; 
+            renderer.setSize(w, h); 
+            camera.aspect = w / h; 
+            camera.updateProjectionMatrix(); 
+        } 
+    }
+    
+    function clearModelGroup() { 
+        if (!modelGroup) return; 
+        while(modelGroup.children.length > 0){ 
+            const child = modelGroup.children[0]; 
+            if(child.geometry) child.geometry.dispose(); 
+            if(child.material) { 
+                if(Array.isArray(child.material)) child.material.forEach(m => m.dispose()); 
+                else child.material.dispose(); 
+            } 
+            modelGroup.remove(child); 
+        } 
+    }
+    
+    function init3D() { 
+        const container = document.getElementById('canvas3D'); 
+        scene = new THREE.Scene(); 
+        camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100); 
+        camera.position.z = 40; 
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); 
+        renderer.setSize(container.clientWidth, container.clientHeight); 
+        renderer.setPixelRatio(window.devicePixelRatio); 
+        renderer.outputEncoding = THREE.sRGBEncoding; 
+        container.appendChild(renderer.domElement); 
+        scene.add(new THREE.AmbientLight(0xffffff, 1.2)); 
+        modelGroup = new THREE.Group(); 
+        scene.add(modelGroup); 
+        let isDown = false, startX = 0, startY = 0; 
+        container.addEventListener('pointerdown', e => { isDown = true; startX = e.clientX; startY = e.clientY; container.setPointerCapture(e.pointerId); }); 
+        container.addEventListener('pointermove', e => { if (!isDown) return; modelGroup.rotation.y += (e.clientX - startX) * 0.01; modelGroup.rotation.x += (e.clientY - startY) * 0.01; startX = e.clientX; startY = e.clientY; }); 
+        container.addEventListener('pointerup', e => { isDown = false; container.releasePointerCapture(e.pointerId); }); 
+        window.addEventListener('resize', updateViewerSize); 
+        function animate() { requestAnimationFrame(animate); renderer.render(scene, camera); } 
+        animate(); 
+    }
+    
+    function loadSkinModel(skin) { 
+        clearModelGroup(); 
+        modelGroup.rotation.set(0, 0, 0); 
+        modelGroup.scale.set(0.75, 0.75, 0.75); 
+        modelGroup.position.set(0,0,0); 
+        const file = skinFiles.get(skin.texture); 
+        if (!file) return; 
+        const img = new Image(); 
+        img.src = URL.createObjectURL(file); 
+        img.onload = () => { 
+            createSteveModel(img, skin.skinType === 'slim'); 
+            modelGroup.children.forEach(child => { child.position.y -= 16; }); 
+        }; 
+    }
+    
+    function createSteveModel(img, isSlim) { 
+        const getTex = (x, y, w, h, isTransparent, isFlipped = false) => { 
+            const canvas = document.createElement('canvas'); 
+            canvas.width = w; 
+            canvas.height = h; 
+            const ctx = canvas.getContext('2d'); 
+            ctx.save(); 
+            if (isFlipped) { ctx.translate(0, h); ctx.scale(1, -1); } 
+            ctx.drawImage(img, x, y, w, h, 0, 0, w, h); 
+            ctx.restore(); 
+            const tex = new THREE.CanvasTexture(canvas); 
+            tex.magFilter = THREE.NearestFilter; 
+            tex.minFilter = THREE.NearestFilter; 
+            tex.encoding = THREE.sRGBEncoding; 
+            return new THREE.MeshBasicMaterial({ map: tex, color: 0xffffff, transparent: isTransparent, opacity: 1, alphaTest: isTransparent ? 0.1 : 0, side: isTransparent ? THREE.DoubleSide : THREE.FrontSide }); 
+        }; 
         
-        function updateFileName(val, i) {
-            val = val.trim();
-            if (!val) return; 
+        function createLimb(w, h, d, x, y, z, u, v, inflate = 0) { 
+            const boxW = w + inflate * 2; 
+            const boxH = h + inflate * 2; 
+            const boxD = d + inflate * 2; 
+            const geometry = new THREE.BoxGeometry(boxW, boxH, boxD); 
+            const isOuter = inflate > 0; 
+            const materials = [ 
+                getTex(u + d + w, v + d, d, h, isOuter), 
+                getTex(u, v + d, d, h, isOuter), 
+                getTex(u + d, v, w, d, isOuter), 
+                getTex(u + d + w, v, w, d, isOuter, true), 
+                getTex(u + d, v + d, w, h, isOuter), 
+                getTex(u + d + w + d, v + d, w, h, isOuter) 
+            ]; 
+            const mesh = new THREE.Mesh(geometry, materials); 
+            mesh.position.set(x, y, z); 
+            modelGroup.add(mesh); 
+        } 
+        
+        createLimb(8, 8, 8, 0, 28, 0, 0, 0); 
+        createLimb(8, 8, 8, 0, 28, 0, 32, 0, 0.5); 
+        createLimb(8, 12, 4, 0, 18, 0, 16, 16); 
+        createLimb(8, 12, 4, 0, 18, 0, 16, 32, 0.25); 
+        const armW = isSlim ? 3 : 4; 
+        const armX = isSlim ? 5.5 : 6; 
+        const armY = isSlim ? 17.5 : 18; 
+        createLimb(armW, 12, 4, -armX, armY, 0, 40, 16); 
+        createLimb(armW, 12, 4, -armX, armY, 0, 40, 32, 0.25); 
+        createLimb(armW, 12, 4, armX, armY, 0, 32, 48); 
+        createLimb(armW, 12, 4, armX, armY, 0, 48, 48, 0.25); 
+        createLimb(4, 12, 4, -1.9, 6, 0, 0, 16); 
+        createLimb(4, 12, 4, -1.9, 6, 0, 0, 32, 0.25); 
+        createLimb(4, 12, 4, 1.9, 6, 0, 16, 48); 
+        createLimb(4, 12, 4, 1.9, 6, 0, 0, 48, 0.25); 
+    }
 
-            if (!val.toLowerCase().endsWith('.png')) { val += '.png'; }
-            let base = val.replace(/\.png$/i, '');
-            val = getSafeFileName(base) + ".png";
+    // --- EXPORT ---
+    async function checkAndExport() {
+        if (skins.length === 0) { await showCustomAlert("NO SKINS", "Please add at least one skin."); return; }
+        
+        const ids = skins.map(s => s.localization_name);
+        const duplicateIds = ids.filter((item, index) => ids.indexOf(item) !== index);
+        if (duplicateIds.length > 0) { await showCustomAlert("DUPLICATE ID", `Duplicate ID found: ${duplicateIds[0]}\nPlease change one of them.`); return; }
 
-            const oldTextureName = skins[i].texture;
-            if (val === oldTextureName) return;
+        const missingFiles = skins.filter(s => !skinFiles.has(s.texture));
+        if (missingFiles.length > 0) { await showCustomAlert("MISSING FILES", `Error: Texture file not found for ${missingFiles[0].displayName}.`); return; }
 
-            if (skinFiles.has(val)) { 
-                showCustomAlert("ERROR", "File name already exists."); 
-                const inputs = document.querySelectorAll('#sheetForm input');
-                if(inputs[2]) inputs[2].value = oldTextureName.replace(/\.(png|tga)$/i, "");
-                return; 
-            }
+        if (skins.some(s => !s.localization_name || s.localization_name.trim() === "")) { await showCustomAlert("ERROR", "Skin ID cannot be empty."); return; }
+        if (skins.some(s => /\s/.test(s.localization_name))) { await showCustomAlert("ERROR", "Remove spaces from Skin IDs."); return; }
 
-            if (skinFiles.has(oldTextureName)) { 
-                const f = skinFiles.get(oldTextureName); 
-                skinFiles.delete(oldTextureName); 
-                skinFiles.set(val, f); 
-            }
-            
-            skins[i].texture = val;
-            const inputs = document.querySelectorAll('#sheetForm input');
-            if(inputs[2]) inputs[2].value = getSafeFileName(base);
-        }
-
-        function duplicateCurrentSkin() {
-            const src = skins[selectedIndex];
-            const newName = src.displayName + " Copy";
-            const newId = src.localization_name + "_copy";
-            const newSkin = JSON.parse(JSON.stringify(src));
-            newSkin.displayName = newName;
-            newSkin.localization_name = newId;
-            
-            // [수정됨] 현재 스킨 바로 뒤에 추가
-            skins.splice(selectedIndex + 1, 0, newSkin);
-            
-            closeSheet();
-            renderGrid();
-        }
-
-        async function deleteCurrentSkin() { 
-            if(await showCustomConfirm("DELETE SKIN", "Are you sure you want to delete this skin?", true)) {
-                const textureName = skins[selectedIndex].texture;
-                skins.splice(selectedIndex, 1);
-                const isTextureUsed = skins.some(s => s.texture === textureName);
-                if (!isTextureUsed && skinFiles.has(textureName)) { skinFiles.delete(textureName); }
-                closeSheet(); 
-                renderGrid(); 
-            }
-        }
-
-        // --- EXPORT & REORDER LOGIC ---
-        function openExportScreen() {
-            if (skins.length === 0) { showCustomAlert("NO SKINS", "Add skins to export."); return; }
-            renderReorderList();
-            navTo('exportScreen');
-        }
-
-        // [수정됨] CANCEL 클릭 시 그리드 갱신 후 메인으로
-        function closeReorderScreen() {
-            renderGrid();
-            navTo('mainScreen');
-        }
-
-        function renderReorderList() {
-            const list = document.getElementById('reorderList');
-            list.innerHTML = '';
-            skins.forEach((s, i) => {
-                const item = document.createElement('div');
-                item.className = 'reorder-item';
-                // [수정됨] 이미지 제거, 텍스트만 표시
-                item.innerHTML = `
-                    <div class="reorder-info">
-                        <div class="reorder-name">${s.displayName}</div>
-                        <div class="reorder-id">${s.localization_name}</div>
-                    </div>
-                    <div class="reorder-handle">≡</div>
-                `;
-                
-                const handle = item.querySelector('.reorder-handle');
-                handle.addEventListener('touchstart', (e) => handleTouchStart(e, i, item));
-                handle.addEventListener('touchmove', (e) => handleTouchMove(e, item));
-                handle.addEventListener('touchend', (e) => handleTouchEnd(e, item));
-
-                list.appendChild(item);
-            });
-        }
-
-        let dragSrcEl = null;
-        let dragSrcIndex = -1;
-        let placeholder = null;
-
-        function handleTouchStart(e, index, item) {
-            dragSrcEl = item;
-            dragSrcIndex = index;
-            
-            const rect = item.getBoundingClientRect();
-            item.style.width = rect.width + 'px';
-            item.style.boxSizing = 'border-box';
-
-            item.classList.add('dragging');
-            
-            placeholder = document.createElement('div');
-            placeholder.className = 'reorder-item';
-            placeholder.style.visibility = 'hidden';
-            placeholder.style.height = item.offsetHeight + 'px';
-            placeholder.style.margin = '0';
-            item.parentNode.insertBefore(placeholder, item.nextSibling);
-            
-            item.style.position = 'absolute';
-            item.style.zIndex = 1000;
-        }
-
-        function handleTouchMove(e, item) {
-            e.preventDefault();
-            const touch = e.touches[0];
-            item.style.top = (touch.clientY - item.offsetHeight/2) + 'px';
-            
-            const elements = document.elementsFromPoint(touch.clientX, touch.clientY);
-            const target = elements.find(el => el.classList.contains('reorder-item') && el !== item && el !== placeholder);
-            
-            if (target) {
-                const list = document.getElementById('reorderList');
-                const rect = target.getBoundingClientRect();
-                const next = (touch.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
-                list.insertBefore(placeholder, next ? target.nextSibling : target);
-            }
-        }
-
-        function handleTouchEnd(e, item) {
-            item.classList.remove('dragging');
-            item.style.position = '';
-            item.style.top = '';
-            item.style.width = '';
-            item.style.zIndex = '';
-            item.style.boxSizing = '';
-            
-            const list = document.getElementById('reorderList');
-            list.insertBefore(item, placeholder);
-            list.removeChild(placeholder);
-            
-            const newSkins = [];
-            const rows = list.querySelectorAll('.reorder-item');
-            
-            // [수정됨] ID를 사용하여 스킨 찾기 (이름 중복 방지)
-            rows.forEach(row => {
-                const id = row.querySelector('.reorder-id').innerText;
-                const skin = skins.find(s => s.localization_name === id);
-                if(skin) newSkins.push(skin);
-            });
-            
-            if(newSkins.length === skins.length) {
-                skins = newSkins;
-            }
-            
-            renderReorderList(); 
-        }
-
-        async function checkAndExport() {
-            if (skins.length === 0) { await showCustomAlert("NO SKINS", "Please add at least one skin."); return; }
-            
-            const ids = skins.map(s => s.localization_name);
-            const duplicateIds = ids.filter((item, index) => ids.indexOf(item) !== index);
-            if (duplicateIds.length > 0) {
-                await showCustomAlert("DUPLICATE ID", `Duplicate ID found: ${duplicateIds[0]}\nPlease change one of them.`);
-                return;
-            }
-
-            const missingFiles = skins.filter(s => !skinFiles.has(s.texture));
-            if (missingFiles.length > 0) {
-                await showCustomAlert("MISSING FILES", `Error: Texture file not found for ${missingFiles[0].displayName}.\nPlease re-add the texture.`);
-                return;
-            }
-
-            if (skins.some(s => !s.localization_name || s.localization_name.trim() === "")) { await showCustomAlert("ERROR", "Skin ID cannot be empty.\nPlease check your skins."); return; }
-            if (skins.some(s => /\s/.test(s.localization_name))) { await showCustomAlert("ERROR", "Remove spaces from Skin IDs."); return; }
-
+        if (await showCustomConfirm("EXPORT", "Download .mcpack file?")) {
             finalDownload();
         }
+    }
 
-        async function finalDownload() {
-            const zip = new JSZip();
-            const uuid = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => (Math.random()*16|0).toString(16));
-            
-            zip.file('manifest.json', JSON.stringify({
-                format_version: 2,
-                header: { name: projectData.packName, uuid: uuid(), version: [1,0,0] },
-                modules: [{ type: "skin_pack", uuid: uuid(), version: [1,0,0] }]
-            }, null, 2));
+    async function finalDownload() {
+        const zip = new JSZip();
+        const uuid = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => (Math.random()*16|0).toString(16));
+        
+        zip.file('manifest.json', JSON.stringify({
+            format_version: 2,
+            header: { name: projectData.packName, uuid: uuid(), version: [1,0,0] },
+            modules: [{ type: "skin_pack", uuid: uuid(), version: [1,0,0] }]
+        }, null, 2));
 
-            const skinsJsonData = skins.map(s => {
-                let obj = {
-                    localization_name: s.localization_name,
-                    geometry: s.geometry,
-                    texture: s.texture,
-                    type: "free"
-                };
-                if (s.enable_attachables === false) obj.enable_attachables = false;
-                if (s.animations && s.animations.length > 0) {
-                    let animObj = {};
-                    let hasAnim = false;
-                    s.animations.forEach(a => {
-                        if(a.key && a.value) { animObj[a.key] = a.value; hasAnim = true; }
-                    });
-                    if (hasAnim) obj.animations = animObj;
-                }
-                return obj;
-            });
+        const skinsJsonData = skins.map(s => {
+            let obj = {
+                localization_name: s.localization_name,
+                geometry: s.geometry,
+                texture: s.texture,
+                type: "free"
+            };
+            if (s.enable_attachables === false) obj.enable_attachables = false;
+            if (s.animations && s.animations.length > 0) {
+                let animObj = {};
+                let hasAnim = false;
+                s.animations.forEach(a => { if(a.key && a.value) { animObj[a.key] = a.value; hasAnim = true; } });
+                if (hasAnim) obj.animations = animObj;
+            }
+            return obj;
+        });
 
-            zip.file('skins.json', JSON.stringify({
-                serialize_name: projectData.serializeName,
-                localization_name: projectData.localizationName,
-                skins: skinsJsonData
-            }, null, 2));
+        zip.file('skins.json', JSON.stringify({
+            serialize_name: projectData.serializeName,
+            localization_name: projectData.localizationName,
+            skins: skinsJsonData
+        }, null, 2));
 
-            let lang = `skinpack.${projectData.localizationName}=${projectData.packName}\n`;
-            skins.forEach(s => {
-                lang += `skin.${projectData.localizationName}.${s.localization_name}=${s.displayName}\n`;
-            });
-            zip.file('texts/en_US.lang', lang);
+        let lang = `skinpack.${projectData.localizationName}=${projectData.packName}\n`;
+        skins.forEach(s => { lang += `skin.${projectData.localizationName}.${s.localization_name}=${s.displayName}\n`; });
+        zip.file('texts/en_US.lang', lang);
 
-            for (const [name, file] of skinFiles) zip.file(name, file);
+        for (const [name, file] of skinFiles) zip.file(name, file);
 
-            const content = await zip.generateAsync({type: 'blob'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(content);
-            a.download = `${projectData.packName}.mcpack`;
-            a.click();
-        }
-    </script>
+        const content = await zip.generateAsync({type: 'blob'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(content);
+        a.download = `${projectData.packName}.mcpack`;
+        a.click();
+    }
+</script>
 </body>
 </html>
